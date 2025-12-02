@@ -1,5 +1,5 @@
 :root {
-  /* Colors - Stone Palette */
+  /* === STONE PALETTE (Part II, Section 2.1) === */
   --stone-50: #FAFAF9;
   --stone-100: #F5F5F4;
   --stone-200: #E7E5E4;
@@ -11,47 +11,86 @@
   --stone-800: #292524;
   --stone-900: #1C1917;
 
-  /* Status Colors */
-  --status-blocked: #DC2626;
-  --status-waiting: #D97706;
-  --status-active: #16A34A;
-  --status-complete: #6366F1;
+  /* === STATUS COLORS (Part II, Section 2.3) === */
+  /* These are EARNED — only appear when status requires */
+  --status-active: #22C55E;      /* Green 500 — active/approved */
+  --status-pending: #F59E0B;     /* Amber 500 — waiting/review */
+  --status-blocked: #EF4444;     /* Red 500 — blocked/rejected */
+  --status-complete: #3B82F6;    /* Blue 500 — complete/archived */
 
-  /* Zone Colors */
-  --zone-coastal: #0EA5E9;
-  --zone-fire: #EF4444;
-  --zone-landslide: #8B5CF6;
+  /* === SEMANTIC COLORS === */
+  --color-background: var(--stone-50);
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-border: var(--stone-200);
+  --color-border-subtle: var(--stone-100);
 
-  /* Typography */
-  --font-display: "SF Compact Display", "Roboto Condensed", "Segoe UI", "Bebas Neue", sans-serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "SF Mono", "Roboto Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
-  --font-serif: "New York", "Roboto Serif", Georgia, "Times New Roman", serif;
+  --color-text-primary: var(--stone-900);
+  --color-text-secondary: var(--stone-600);
+  --color-text-tertiary: var(--stone-400);
+  --color-text-inverse: #FFFFFF;
 
-  /* Spacing (8px base unit) */
-  --space-0: 0px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
+  /* === TYPOGRAPHY (Part III) === */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
 
-  /* Border Radii */
-  --radius-none: 0px;
-  --radius-sm: 2px;
-  --radius-base: 4px;
-  --radius-pill: 9999px;
+  /* Type Scale — 1.25 ratio */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.25rem;      /* 20px */
+  --text-xl: 1.5rem;       /* 24px */
+  --text-2xl: 2rem;        /* 32px */
+  --text-3xl: 2.5rem;      /* 40px */
+  --text-4xl: 3rem;        /* 48px */
+
+  /* Line Heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* === SPACING (Part IV) — 8px Base Unit === */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* === COMPONENT TOKENS === */
+  /* Sidebar (Part VI) */
+  --sidebar-width: 380px;
+  --sidebar-width-collapsed: 0px;
+
+  /* Header */
+  --header-height: 64px;
+
+  /* Cards */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Shadows (minimal, architectural) */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-elevated: 0 20px 25px rgba(0,0,0,0.15);
 
   /* Transitions */
-  --transition-fast: 100ms ease-out;
-  --transition-normal: 200ms ease-out;
-  --transition-slow: 300ms ease-out;
-  --transition-sidebar: 250ms ease-in-out;
-  --transition-map: 2000ms ease-in-out;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

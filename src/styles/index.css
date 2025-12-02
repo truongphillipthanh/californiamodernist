@@ -1,40 +1,15 @@
-/* Tailwind directives */
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import CMD design tokens */
-@import './tokens.css';
-
-/* Base styles */
 @layer base {
-  html {
-    font-family: var(--font-sans);
-    background-color: var(--stone-50);
-    color: var(--stone-600);
-  }
-
   body {
-    margin: 0;
-    padding: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  #root {
-    width: 100%;
-    min-height: 100vh;
-  }
-
-  /* Typography base */
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 500;
-    color: var(--stone-800);
-  }
-
-  /* Focus states */
-  *:focus-visible {
-    outline: 2px solid var(--stone-400);
-    outline-offset: 2px;
   }
 }
