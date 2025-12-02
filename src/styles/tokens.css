@@ -1,0 +1,57 @@
+:root {
+  /* Colors - Stone Palette */
+  --stone-50: #FAFAF9;
+  --stone-100: #F5F5F4;
+  --stone-200: #E7E5E4;
+  --stone-300: #D6D3D1;
+  --stone-400: #A8A29E;
+  --stone-500: #78716C;
+  --stone-600: #57534E;
+  --stone-700: #44403C;
+  --stone-800: #292524;
+  --stone-900: #1C1917;
+
+  /* Status Colors */
+  --status-blocked: #DC2626;
+  --status-waiting: #D97706;
+  --status-active: #16A34A;
+  --status-complete: #6366F1;
+
+  /* Zone Colors */
+  --zone-coastal: #0EA5E9;
+  --zone-fire: #EF4444;
+  --zone-landslide: #8B5CF6;
+
+  /* Typography */
+  --font-display: "SF Compact Display", "Roboto Condensed", "Segoe UI", "Bebas Neue", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "SF Mono", "Roboto Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+  --font-serif: "New York", "Roboto Serif", Georgia, "Times New Roman", serif;
+
+  /* Spacing (8px base unit) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Border Radii */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-base: 4px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --transition-fast: 100ms ease-out;
+  --transition-normal: 200ms ease-out;
+  --transition-slow: 300ms ease-out;
+  --transition-sidebar: 250ms ease-in-out;
+  --transition-map: 2000ms ease-in-out;
+}

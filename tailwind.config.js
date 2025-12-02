@@ -1,0 +1,97 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        stone: {
+          50: '#FAFAF9',
+          100: '#F5F5F4',
+          200: '#E7E5E4',
+          300: '#D6D3D1',
+          400: '#A8A29E',
+          500: '#78716C',
+          600: '#57534E',
+          700: '#44403C',
+          800: '#292524',
+          900: '#1C1917',
+        },
+        status: {
+          blocked: '#DC2626',
+          waiting: '#D97706',
+          active: '#16A34A',
+          complete: '#6366F1',
+        },
+        zone: {
+          coastal: '#0EA5E9',
+          fire: '#EF4444',
+          landslide: '#8B5CF6',
+        },
+      },
+      fontFamily: {
+        display: [
+          'SF Compact Display',
+          'Roboto Condensed',
+          'Segoe UI',
+          'Bebas Neue',
+          'Impact',
+          'sans-serif',
+        ],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'SF Pro Text',
+          'Roboto',
+          'Segoe UI',
+          'system-ui',
+          'sans-serif',
+        ],
+        mono: [
+          'SF Mono',
+          'Roboto Mono',
+          'Cascadia Code',
+          'Fira Code',
+          'Consolas',
+          'monospace',
+        ],
+        serif: [
+          'New York',
+          'Roboto Serif',
+          'Georgia',
+          'Times New Roman',
+          'serif',
+        ],
+      },
+      spacing: {
+        1: '4px',
+        2: '8px',
+        3: '12px',
+        4: '16px',
+        5: '20px',
+        6: '24px',
+        8: '32px',
+        10: '40px',
+        12: '48px',
+        16: '64px',
+        20: '80px',
+      },
+      borderRadius: {
+        sm: '2px',
+        DEFAULT: '4px',
+        base: '4px',
+        pill: '9999px',
+      },
+      transitionDuration: {
+        fast: '100ms',
+        normal: '200ms',
+        slow: '300ms',
+        sidebar: '250ms',
+        map: '2000ms',
+      },
+    },
+  },
+  plugins: [],
+}
