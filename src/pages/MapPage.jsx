@@ -1,69 +1,49 @@
 import { useState, useEffect } from 'react';
-import { getMapMarkers } from '../lib/api';
+import { useNavigate } from 'react-router-dom';
+import Map from '../components/map/Map';
+import ProjectSidebar from '../components/sidebar/ProjectSidebar';
+import { getProjects, getMapMarkers } from '../lib/api';
 
 export default function MapPage() {
+  const [projects, setProjects] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getMapMarkers().then(setMarkers);
+    Promise.all([getProjects(), getMapMarkers()]).then(([projectsData, markersData]) => {
+      setProjects(projectsData);
+      setMarkers(markersData);
+    });
   }, []);
 
+  const handleProjectSelect = (project) => {
+    setSelectedProject(project);
+    // Could also fly map to project location here
+  };
+
+  const handleProjectNavigate = (project) => {
+    navigate(`/project/${project.id}`);
+  };
+
   return (
-    <div className="h-[calc(100vh-64px)] relative">
-      {/* Map placeholder — will be replaced with Mapbox */}
-      <div className="absolute inset-0 bg-stone-200 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-stone-500 text-lg">Map Component</p>
-          <p className="text-stone-400 text-sm mt-1">
-            {markers.length} projects loaded
-          </p>
-        </div>
+    <div className="h-[calc(100vh-64px)] relative flex">
+      {/* Sidebar */}
+      <div className="w-[380px] border-r border-stone-200 bg-white shrink-0 hidden lg:block">
+        <ProjectSidebar
+          projects={projects}
+          selectedProject={selectedProject}
+          onSelectProject={handleProjectSelect}
+        />
       </div>
 
-      {/* Project markers list (temporary, for testing data) */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 max-w-xs">
-        <p className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-2">
-          Projects
-        </p>
-        <ul className="space-y-1">
-          {markers.map((marker) => (
-            <li key={marker.id}>
-              <button
-                onClick={() => setSelectedProject(marker)}
-                className={`
-                  w-full text-left px-3 py-2 rounded-md text-sm transition-colors
-                  ${selectedProject?.id === marker.id
-                    ? 'bg-stone-900 text-white'
-                    : 'hover:bg-stone-100 text-stone-700'
-                  }
-                `}
-              >
-                {marker.name}
-              </button>
-            </li>
-          ))}
-        </ul>
+      {/* Map */}
+      <div className="flex-1 relative">
+        <Map
+          markers={markers}
+          onProjectSelect={handleProjectNavigate}
+        />
       </div>
-
-      {/* Selected project info (temporary) */}
-      {selectedProject && (
-        <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 w-72">
-          <p className="font-medium text-stone-900">{selectedProject.name}</p>
-          <p className="text-sm text-stone-500 mt-1">{selectedProject.address}</p>
-          <div className="flex items-center gap-2 mt-3">
-            <span className={`
-              inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-              ${selectedProject.status === 'active' ? 'bg-green-100 text-green-700' : ''}
-              ${selectedProject.status === 'pending' ? 'bg-amber-100 text-amber-700' : ''}
-              ${selectedProject.status === 'complete' ? 'bg-blue-100 text-blue-700' : ''}
-            `}>
-              {selectedProject.status}
-            </span>
-            <span className="text-xs text-stone-400">{selectedProject.phase}</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
