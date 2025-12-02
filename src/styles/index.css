@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import 'mapbox-gl/dist/mapbox-gl.css';
 
 @tailwind base;
 @tailwind components;
