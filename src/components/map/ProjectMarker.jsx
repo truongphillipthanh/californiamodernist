@@ -1,7 +1,9 @@
-// ProjectMarker: Status-colored circular markers
-// Style Guide Part V, Section 5.2
+// ProjectMarker: Map markers with project names and status dots
+// Style Guide Part V, Section 5.1
+// Display font: SF Compact Display, uppercase, centered
+// Marker structure: Name on top, status dot centered below
 
-export default function ProjectMarker({ status }) {
+export default function ProjectMarker({ name, status }) {
   const statusColors = {
     active: '#22C55E',
     pending: '#F59E0B',
@@ -11,19 +13,23 @@ export default function ProjectMarker({ status }) {
 
   return (
     <div
-      className="relative w-6 h-6 cursor-pointer"
+      className="bg-white rounded-sm shadow-lg px-2 py-1 cursor-pointer transition-transform duration-100 hover:scale-105 hover:shadow-xl"
       style={{
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+        fontFamily: '"SF Compact Display", "Roboto Condensed", "Segoe UI", "Bebas Neue", sans-serif',
       }}
     >
-      {/* Outer ring (white) */}
-      <div className="absolute inset-0 bg-white rounded-full" />
+      {/* Project name - uppercase, centered, Display font */}
+      <div className="text-stone-800 text-xs font-medium uppercase tracking-tight text-center whitespace-nowrap">
+        {name}
+      </div>
 
-      {/* Inner dot (status color) */}
-      <div
-        className="absolute inset-1 rounded-full"
-        style={{ backgroundColor: statusColors[status] || '#71717A' }}
-      />
+      {/* Status dot - centered below name */}
+      <div className="flex justify-center mt-0.5">
+        <div
+          className="w-2 h-2 rounded-full"
+          style={{ backgroundColor: statusColors[status] || '#71717A' }}
+        />
+      </div>
     </div>
   );
 }

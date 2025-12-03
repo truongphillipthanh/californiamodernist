@@ -10,7 +10,7 @@ import ClickCard from './ClickCard';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-export default function Map({ markers = [], onProjectSelect }) {
+export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/satellite-streets-v12' }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markersRef = useRef([]);
@@ -24,7 +24,7 @@ export default function Map({ markers = [], onProjectSelect }) {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      style: mapStyle,
       center: [-118.7798, 34.0259], // Malibu center
       zoom: 12,
     });
@@ -46,7 +46,13 @@ export default function Map({ markers = [], onProjectSelect }) {
     return () => {
       map.current?.remove();
     };
-  }, []);
+  }, [mapStyle]);
+
+  // Update map style when mapStyle prop changes
+  useEffect(() => {
+    if (!map.current) return;
+    map.current.setStyle(mapStyle);
+  }, [mapStyle]);
 
   // Update markers when data changes
   useEffect(() => {
@@ -67,7 +73,7 @@ export default function Map({ markers = [], onProjectSelect }) {
       // Create marker element
       const markerEl = document.createElement('div');
       const root = createRoot(markerEl);
-      root.render(<ProjectMarker status={project.status} />);
+      root.render(<ProjectMarker name={project.name} status={project.status} />);
 
       // Create Mapbox marker
       const marker = new mapboxgl.Marker({
