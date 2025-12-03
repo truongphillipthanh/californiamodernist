@@ -1,5 +1,6 @@
 // Layer Toggle - Center-bottom map style selector
 // Style Guide Part X, Section 10.4
+// TASK-015: Aligned to bottom: 56px (32px above baseline of 24px)
 
 const layers = [
   { id: 'streets', label: 'Map', style: 'mapbox://styles/mapbox/streets-v12' },
@@ -9,7 +10,7 @@ const layers = [
 
 export default function LayerToggle({ activeLayer, onLayerChange }) {
   return (
-    <div className="fixed bottom-[72px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+    <div className="fixed bottom-[56px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto">{/* bottom-[56px] = 56px */}
       <div className="bg-white rounded-lg shadow-lg p-1 flex items-center gap-1">
         {layers.map((layer) => (
           <button

@@ -14,3 +14,9 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+/* TASK-015: Align Mapbox controls to bottom: 24px baseline */
+.mapboxgl-ctrl-bottom-right {
+  bottom: 24px !important;
+  right: 16px !important;
+}
