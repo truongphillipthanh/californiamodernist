@@ -48,6 +48,7 @@ export default function MapPage() {
           projects={projects}
           selectedProject={selectedProject}
           onSelectProject={handleProjectSelect}
+          onCloseSidebar={() => setSidebarOpen(false)}
         />
       </Sidebar>
 
