@@ -1,7 +1,8 @@
-// ProjectMarker: Map markers with project names and status dots
+// ProjectMarker: Map markers with shorthand names and status dots
 // Style Guide Part V, Section 5.1
-// Display font: SF Compact Display, uppercase, centered
-// Marker structure: Name on top, status dot centered below
+// TASK-014: Enhanced typography for legibility over satellite imagery
+// Display font: SF Compact Display, uppercase, Stone 900, +10% tracking
+// Text shadow for contrast over map imagery
 
 export default function ProjectMarker({ name, status }) {
   const statusColors = {
@@ -13,21 +14,38 @@ export default function ProjectMarker({ name, status }) {
 
   return (
     <div
-      className="bg-white rounded-sm shadow-lg px-2 py-1 cursor-pointer transition-transform duration-100 hover:scale-105 hover:shadow-xl"
+      className="bg-white cursor-pointer transition-transform duration-100 hover:scale-105"
       style={{
         fontFamily: '"SF Compact Display", "Roboto Condensed", "Segoe UI", "Bebas Neue", sans-serif',
+        padding: '6px 16px 8px 16px',
+        borderRadius: '4px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}
     >
-      {/* Project name - uppercase, centered, Display font */}
-      <div className="text-stone-800 text-xs font-medium uppercase tracking-tight text-center whitespace-nowrap">
+      {/* Project shorthand name - uppercase, Display font, enhanced legibility */}
+      <div
+        className="text-center whitespace-nowrap"
+        style={{
+          fontSize: '11px',
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          color: '#1c1917', // Stone 900
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+        }}
+      >
         {name}
       </div>
 
-      {/* Status dot - centered below name */}
-      <div className="flex justify-center mt-0.5">
+      {/* Status dot - centered below name, 8px */}
+      <div className="flex justify-center mt-1">
         <div
-          className="w-2 h-2 rounded-full"
-          style={{ backgroundColor: statusColors[status] || '#71717A' }}
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: statusColors[status] || '#71717A',
+          }}
         />
       </div>
     </div>

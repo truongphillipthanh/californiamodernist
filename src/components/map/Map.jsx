@@ -15,6 +15,7 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   const map = useRef(null);
   const markersRef = useRef([]);
   const popupsRef = useRef([]);
+  const hoverTimeoutRef = useRef(null);
   const [hoveredProject, setHoveredProject] = useState(null);
   const [clickedProject, setClickedProject] = useState(null);
 
@@ -73,7 +74,7 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       // Create marker element
       const markerEl = document.createElement('div');
       const root = createRoot(markerEl);
-      root.render(<ProjectMarker name={project.name} status={project.status} />);
+      root.render(<ProjectMarker name={project.displayName || project.name} status={project.status} />);
 
       // Create Mapbox marker
       const marker = new mapboxgl.Marker({
@@ -83,16 +84,33 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         .setLngLat([project.coordinates.lng, project.coordinates.lat])
         .addTo(map.current);
 
-      // Hover events
+      // Hover events with delays
       markerEl.addEventListener('mouseenter', () => {
-        setHoveredProject(project);
-        markerEl.style.transform = 'scale(1.2)';
-        markerEl.style.transition = 'transform 0.2s';
+        // Clear any pending hide timeout
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = null;
+        }
+
+        // Show hover card after 150ms delay
+        hoverTimeoutRef.current = setTimeout(() => {
+          setHoveredProject(project);
+          markerEl.style.transform = 'scale(1.2)';
+          markerEl.style.transition = 'transform 0.2s';
+        }, 150);
       });
 
       markerEl.addEventListener('mouseleave', () => {
-        setHoveredProject(null);
-        markerEl.style.transform = 'scale(1)';
+        // Clear any pending show timeout
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+        }
+
+        // Hide hover card after 200ms delay (allows moving to card)
+        hoverTimeoutRef.current = setTimeout(() => {
+          setHoveredProject(null);
+          markerEl.style.transform = 'scale(1)';
+        }, 200);
       });
 
       // Click event
@@ -122,6 +140,20 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       popupEl.classList.add('hover-popup');
       const root = createRoot(popupEl);
       root.render(<HoverCard project={hoveredProject} />);
+
+      // Add hover events to popup to keep it visible
+      popupEl.addEventListener('mouseenter', () => {
+        if (hoverTimeoutRef.current) {
+          clearTimeout(hoverTimeoutRef.current);
+          hoverTimeoutRef.current = null;
+        }
+      });
+
+      popupEl.addEventListener('mouseleave', () => {
+        hoverTimeoutRef.current = setTimeout(() => {
+          setHoveredProject(null);
+        }, 200);
+      });
 
       const popup = new mapboxgl.Popup({
         closeButton: false,

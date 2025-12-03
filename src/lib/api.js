@@ -105,6 +105,7 @@ export async function getMapMarkers() {
     return {
       id: project.id,
       name: project.name,
+      displayName: project.displayName || project.name, // Use shorthand displayName for markers
       status: project.status,
       phase: project.phase,
       type: project.type,
