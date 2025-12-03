@@ -1,65 +1,48 @@
-import { useState } from 'react';
-import { Menu, LayoutGrid, Image } from 'lucide-react';
+// View mode toggle for sidebar
+// Style Guide Part VI, Section 6.2 - View Toggle Component
+// TASK-016: Fixed icon sizes (20px), pill group styling, always-visible views
+
+import { Menu, Grid2x2, Image, ArrowUpDown } from 'lucide-react';
 
 const views = [
   { id: 'list', icon: Menu, label: 'List' },
-  { id: 'card', icon: LayoutGrid, label: 'Card' },
+  { id: 'card', icon: Grid2x2, label: 'Card' },
   { id: 'photo', icon: Image, label: 'Photo' },
 ];
 
-export default function ViewToggle({ activeView, onViewChange, onCloseSidebar }) {
-  const [expanded, setExpanded] = useState(false);
-
-  const handleViewClick = (viewId) => {
-    if (viewId === 'list') {
-      // If already in list view, close the sidebar
-      if (activeView === 'list') {
-        onCloseSidebar?.();
-      } else {
-        // Switch to list view
-        onViewChange('list');
-      }
-      setExpanded(false);
-    } else {
-      // For card/photo, just switch the view
-      onViewChange(viewId);
-      setExpanded(false);
-    }
-  };
-
-  const handleMenuClick = () => {
-    if (activeView === 'list') {
-      // In list view, clicking menu toggles expansion
-      setExpanded(!expanded);
-    } else {
-      // In card/photo view, clicking menu switches to list view
-      onViewChange('list');
-      setExpanded(false);
-    }
-  };
-
-  // Show just the menu icon if collapsed, or all views if expanded
-  const visibleViews = expanded ? views : [views[0]];
-
+export default function ViewToggle({ activeView, onViewChange }) {
   return (
-    <div className="flex items-center bg-stone-100 rounded-md p-0.5">
-      {visibleViews.map(({ id, icon: Icon, label }, index) => (
-        <button
-          key={id}
-          onClick={() => index === 0 ? handleMenuClick() : handleViewClick(id)}
-          className={`
-            flex items-center justify-center p-1.5 rounded transition-colors
-            ${activeView === id
-              ? 'bg-white shadow-sm text-stone-900'
-              : 'text-stone-500 hover:text-stone-700'
-            }
-          `}
-          title={label}
-          aria-label={`${label} view`}
-        >
-          <Icon size={16} />
-        </button>
-      ))}
+    <div className="flex items-center justify-between w-full gap-3">
+      {/* View toggle pill group - all 3 views always visible */}
+      <div className="inline-flex rounded-md overflow-hidden border border-stone-200">
+        {views.map(({ id, icon: Icon, label }, index) => (
+          <button
+            key={id}
+            onClick={() => onViewChange(id)}
+            className={`
+              flex items-center justify-center p-2 transition-colors
+              ${activeView === id
+                ? 'bg-stone-200'
+                : 'bg-white hover:bg-stone-100'
+              }
+              ${index > 0 ? 'border-l border-stone-200' : ''}
+            `}
+            title={label}
+            aria-label={`${label} view`}
+          >
+            <Icon size={20} className="text-stone-600" />
+          </button>
+        ))}
+      </div>
+
+      {/* Sort button - separate, right-aligned */}
+      <button
+        className="flex items-center justify-center p-2 rounded-md border border-stone-200 bg-white hover:bg-stone-100 transition-colors"
+        title="Sort"
+        aria-label="Sort projects"
+      >
+        <ArrowUpDown size={20} className="text-stone-600" />
+      </button>
     </div>
   );
 }

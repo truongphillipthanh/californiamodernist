@@ -52,17 +52,28 @@ export default function ProjectList({ projects, selectedId, onSelect }) {
             </div>
           </button>
 
-          {/* Tooltip on hover */}
+          {/* Tooltip on hover - TASK-016: address, divider, phase/status/days */}
           {hoveredId === project.id && (
             <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
               <div className="bg-white rounded-lg shadow-lg p-3 min-w-[200px] max-w-[280px] border border-stone-200">
                 <p className="text-xs text-stone-600 mb-2">{project.parcel?.address}</p>
-                <span className={`
-                  inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
-                  ${statusStyles[project.status] || 'bg-stone-100 text-stone-600'}
-                `}>
-                  {project.status}
-                </span>
+                <div className="h-px bg-stone-200 my-2" />
+                <div className="flex items-center gap-2 text-xs text-stone-600">
+                  <span className={`
+                    inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                    ${statusStyles[project.status] || 'bg-stone-100 text-stone-600'}
+                  `}>
+                    {project.status}
+                  </span>
+                  <span className="text-stone-400">|</span>
+                  <span>{project.phase?.replace(/_/g, ' ')}</span>
+                  {project.lastAction && (
+                    <>
+                      <span className="text-stone-400">|</span>
+                      <span>{project.lastAction.daysAgo}d ago</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           )}
