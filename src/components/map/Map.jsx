@@ -1,7 +1,8 @@
 // Map component - Mapbox GL JS integration
 // Style Guide Part V (Component Patterns) and Part VII (Interaction Patterns)
+// TASK-019: Hover card singleton with 200ms dismissal delay
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import mapboxgl from 'mapbox-gl';
 import ProjectMarker from './ProjectMarker';
@@ -16,8 +17,59 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   const markersRef = useRef([]);
   const popupsRef = useRef([]);
   const hoverTimeoutRef = useRef(null);
-  const [hoveredProject, setHoveredProject] = useState(null);
+
+  // ═══════════════════════════════════════════════════════════════
+  // HOVER STATE — Single ID, not an array
+  // ═══════════════════════════════════════════════════════════════
+  const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const [clickedProject, setClickedProject] = useState(null);
+
+  // Get the full project object for the hovered project
+  const hoveredProject = hoveredProjectId
+    ? markers.find(p => p.id === hoveredProjectId)
+    : null;
+
+  // ═══════════════════════════════════════════════════════════════
+  // HOVER HANDLERS
+  // ═══════════════════════════════════════════════════════════════
+
+  const handleMarkerEnter = useCallback((projectId) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredProjectId(projectId);
+  }, []);
+
+  const handleMarkerLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredProjectId(null);
+      hoverTimeoutRef.current = null;
+    }, 200);
+  }, []);
+
+  const handleCardEnter = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
+
+  const handleCardLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredProjectId(null);
+      hoverTimeoutRef.current = null;
+    }, 200);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Initialize map
   useEffect(() => {
@@ -74,7 +126,14 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       // Create marker element
       const markerEl = document.createElement('div');
       const root = createRoot(markerEl);
-      root.render(<ProjectMarker name={project.displayName || project.name} status={project.status} />);
+      root.render(
+        <ProjectMarker
+          project={project}
+          name={project.displayName || project.name}
+          status={project.status}
+          isHovered={project.id === hoveredProjectId}
+        />
+      );
 
       // Create Mapbox marker
       const marker = new mapboxgl.Marker({
@@ -84,76 +143,50 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         .setLngLat([project.coordinates.lng, project.coordinates.lat])
         .addTo(map.current);
 
-      // Hover events with delays
+      // Hover events
       markerEl.addEventListener('mouseenter', () => {
-        // Clear any pending hide timeout
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
-        }
-
-        // Show hover card after 150ms delay
-        hoverTimeoutRef.current = setTimeout(() => {
-          setHoveredProject(project);
-          markerEl.style.transform = 'scale(1.2)';
-          markerEl.style.transition = 'transform 0.2s';
-        }, 150);
+        handleMarkerEnter(project.id);
       });
 
       markerEl.addEventListener('mouseleave', () => {
-        // Clear any pending show timeout
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-        }
-
-        // Hide hover card after 200ms delay (allows moving to card)
-        hoverTimeoutRef.current = setTimeout(() => {
-          setHoveredProject(null);
-          markerEl.style.transform = 'scale(1)';
-        }, 200);
+        handleMarkerLeave();
       });
 
       // Click event
       markerEl.addEventListener('click', (e) => {
         e.stopPropagation();
         setClickedProject(project);
-        setHoveredProject(null); // Hide hover card when clicked
+        setHoveredProjectId(null); // Hide hover card when clicked
       });
 
       markersRef.current.push(marker);
     });
-  }, [markers]);
+  }, [markers, hoveredProjectId, handleMarkerEnter, handleMarkerLeave]);
 
-  // Handle hover popup
+  // Handle hover popup - SINGLETON PATTERN
   useEffect(() => {
     if (!map.current) return;
 
-    // Clear previous hover popup
-    popupsRef.current.forEach((popup) => {
+    // Clear ALL previous hover popups to ensure singleton
+    popupsRef.current = popupsRef.current.filter((popup) => {
       if (popup._content?.classList?.contains('hover-popup')) {
         popup.remove();
+        return false;
       }
+      return true;
     });
 
     if (hoveredProject && !clickedProject) {
       const popupEl = document.createElement('div');
       popupEl.classList.add('hover-popup');
       const root = createRoot(popupEl);
-      root.render(<HoverCard project={hoveredProject} />);
-
-      // Add hover events to popup to keep it visible
-      popupEl.addEventListener('mouseenter', () => {
-        if (hoverTimeoutRef.current) {
-          clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
-        }
-      });
-
-      popupEl.addEventListener('mouseleave', () => {
-        hoverTimeoutRef.current = setTimeout(() => {
-          setHoveredProject(null);
-        }, 200);
-      });
+      root.render(
+        <HoverCard
+          project={hoveredProject}
+          onMouseEnter={handleCardEnter}
+          onMouseLeave={handleCardLeave}
+        />
+      );
 
       const popup = new mapboxgl.Popup({
         closeButton: false,
@@ -167,7 +200,7 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
 
       popupsRef.current.push(popup);
     }
-  }, [hoveredProject, clickedProject]);
+  }, [hoveredProject, clickedProject, handleCardEnter, handleCardLeave]);
 
   // Handle click popup
   useEffect(() => {
