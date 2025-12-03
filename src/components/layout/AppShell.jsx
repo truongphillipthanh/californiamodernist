@@ -8,7 +8,7 @@ export default function AppShell({ showSidebar = true, sidebarContent = null }) 
 
   return (
     <div className="min-h-screen bg-stone-50">
-      <Header onMenuClick={() => setSidebarOpen(true)} />
+      <Header />
 
       {showSidebar && (
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
