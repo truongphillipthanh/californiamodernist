@@ -17,13 +17,8 @@ export default function AppShell({ showSidebar = true, sidebarContent = null }) 
       )}
 
       {/* Main content area */}
-      <main
-        className={`
-          pt-16 min-h-screen
-          ${showSidebar ? 'lg:pl-[380px]' : ''}
-        `}
-      >
-        <Outlet />
+      <main className="pt-16 min-h-screen">
+        <Outlet context={{ sidebarOpen, setSidebarOpen }} />
       </main>
     </div>
   );
