@@ -6,9 +6,13 @@ import Sidebar from './Sidebar';
 export default function AppShell({ showSidebar = true, sidebarContent = null }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleMenuClick = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <div className="min-h-screen bg-stone-50">
-      <Header />
+      <Header onMenuClick={handleMenuClick} />
 
       {showSidebar && (
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
