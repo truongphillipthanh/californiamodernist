@@ -1,17 +1,17 @@
 import { NavLink } from 'react-router-dom';
-import { Map, Users, MessageSquare, Search } from 'lucide-react';
+import { Home, CheckSquare, Package, Users, MessageSquare, Search } from 'lucide-react';
 
 export default function Header() {
   return (
     <header className="h-16 bg-white border-b border-stone-200 flex items-center px-6 fixed top-0 left-0 right-0 z-50">
-      {/* Left: Map icon (home) + Logo */}
+      {/* Left: Home icon + Logo */}
       <div className="flex items-center gap-6">
         <NavLink
           to="/"
           className="p-2 hover:bg-stone-100 rounded-md transition-colors"
           aria-label="Home"
         >
-          <Map size={20} className="text-stone-600" />
+          <Home size={20} className="text-stone-600" />
         </NavLink>
 
         <a
@@ -47,56 +47,66 @@ export default function Header() {
       {/* Right: Feature icons + User */}
       <div className="flex items-center gap-6">
         {/* Feature icons */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-3">
+          {/* Task Manager */}
           <NavLink
-            to="/"
+            to="/tasks"
             className={({ isActive }) =>
-              `p-2 rounded-md transition-colors relative ${
+              `p-2 rounded-md transition-colors ${
                 isActive
-                  ? 'bg-stone-100 text-stone-900'
-                  : 'text-stone-600 hover:bg-stone-100'
+                  ? 'text-stone-900'
+                  : 'text-stone-400 hover:text-stone-600'
               }`
             }
-            aria-label="Map view"
+            aria-label="Task Manager"
           >
-            {({ isActive }) => (
-              <>
-                <Map size={20} />
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-stone-900 rounded-full" />
-                )}
-              </>
-            )}
+            <CheckSquare size={20} />
           </NavLink>
 
+          {/* Asset Store */}
+          <NavLink
+            to="/assets"
+            className={({ isActive }) =>
+              `p-2 rounded-md transition-colors ${
+                isActive
+                  ? 'text-stone-900'
+                  : 'text-stone-400 hover:text-stone-600'
+              }`
+            }
+            aria-label="Asset Store"
+          >
+            <Package size={20} />
+          </NavLink>
+
+          {/* CRM */}
           <NavLink
             to="/crm"
             className={({ isActive }) =>
-              `p-2 rounded-md transition-colors relative ${
+              `p-2 rounded-md transition-colors ${
                 isActive
-                  ? 'bg-stone-100 text-stone-900'
-                  : 'text-stone-600 hover:bg-stone-100'
+                  ? 'text-stone-900'
+                  : 'text-stone-400 hover:text-stone-600'
               }`
             }
             aria-label="CRM"
           >
-            {({ isActive }) => (
-              <>
-                <Users size={20} />
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-stone-900 rounded-full" />
-                )}
-              </>
-            )}
+            <Users size={20} />
           </NavLink>
 
-          <button
-            className="p-2 rounded-md transition-colors text-stone-600 hover:bg-stone-100"
+          {/* Communications */}
+          <NavLink
+            to="/comms"
+            className={({ isActive }) =>
+              `p-2 rounded-md transition-colors ${
+                isActive
+                  ? 'text-stone-900'
+                  : 'text-stone-400 hover:text-stone-600'
+              }`
+            }
             aria-label="Communications"
-            disabled
           >
             <MessageSquare size={20} />
-          </button>
+          </NavLink>
         </nav>
 
         {/* User avatar */}
