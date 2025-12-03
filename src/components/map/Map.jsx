@@ -129,8 +129,6 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       root.render(
         <ProjectMarker
           project={project}
-          name={project.displayName || project.name}
-          status={project.status}
           isHovered={project.id === hoveredProjectId}
         />
       );

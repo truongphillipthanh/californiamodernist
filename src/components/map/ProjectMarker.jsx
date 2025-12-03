@@ -1,52 +1,90 @@
-// ProjectMarker: Map markers with shorthand names and status dots
-// Style Guide Part V, Section 5.1
-// TASK-014: Enhanced typography for legibility over satellite imagery
-// TASK-019: Updated to accept mouse handlers and hover state
-// Display font: SF Compact Display, uppercase, Stone 900, +10% tracking
-// Text shadow for contrast over map imagery
+import React from 'react';
 
-export default function ProjectMarker({ name, status, isHovered = false, project }) {
-  const statusColors = {
-    active: '#22C55E',
-    pending: '#F59E0B',
-    complete: '#3B82F6',
-    blocked: '#EF4444',
-  };
+const STATUS_COLORS = {
+  blocked: '#DC2626',
+  waiting: '#D97706',
+  active: '#16A34A',
+  complete: '#6366F1',
+  on_hold: '#78716C',
+};
+
+export default function ProjectMarker({
+  project,
+  isHovered = false,
+  isEmphasized = false,
+  onMouseEnter,
+  onMouseLeave,
+  onClick,
+}) {
+  const statusColor = STATUS_COLORS[project.status] || STATUS_COLORS.active;
+  const scale = isEmphasized ? 1.1 : isHovered ? 1.05 : 1;
+
+  const displayName = project.displayName
+    || project.shortName
+    || project.name.split(' ')[0].toUpperCase();
 
   return (
     <div
-      className="bg-white cursor-pointer transition-transform duration-100"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+      className="cursor-pointer select-none"
       style={{
-        fontFamily: '"SF Compact Display", "Roboto Condensed", "Segoe UI", "Bebas Neue", sans-serif',
-        padding: '6px 16px 8px 16px',
-        borderRadius: '4px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+        transform: `scale(${scale})`,
+        transition: 'transform 100ms ease-out',
       }}
     >
-      {/* Project shorthand name - uppercase, Display font, enhanced legibility */}
+      {/* Marker Body */}
       <div
-        className="text-center whitespace-nowrap"
+        className="flex items-center justify-center gap-1.5"
         style={{
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          color: '#1c1917', // Stone 900
-          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          backgroundColor: '#1C1917',
+          padding: '6px 12px',
+          borderRadius: '4px',
+          boxShadow: isEmphasized
+            ? `0 0 12px 2px ${statusColor}33, 0 2px 8px rgba(0,0,0,0.3)`
+            : isHovered
+              ? '0 4px 12px rgba(0,0,0,0.25)'
+              : '0 2px 6px rgba(0,0,0,0.2)',
         }}
       >
-        {name}
-      </div>
-
-      {/* Status dot - centered below name, 8px */}
-      <div className="flex justify-center mt-1">
+        {/* Status Dot */}
         <div
+          className="flex-shrink-0"
           style={{
             width: '8px',
             height: '8px',
             borderRadius: '50%',
-            backgroundColor: statusColors[status] || '#71717A',
+            backgroundColor: statusColor,
+          }}
+        />
+
+        {/* Project Name */}
+        <span
+          style={{
+            fontFamily: '"SF Compact Display", "Roboto Condensed", -apple-system, system-ui, sans-serif',
+            fontSize: '11px',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            color: '#FAFAF9',
+            lineHeight: 1,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {displayName}
+        </span>
+      </div>
+
+      {/* Pointer Arrow */}
+      <div className="flex justify-center">
+        <div
+          style={{
+            width: 0,
+            height: 0,
+            borderLeft: '6px solid transparent',
+            borderRight: '6px solid transparent',
+            borderTop: '8px solid #1C1917',
           }}
         />
       </div>
