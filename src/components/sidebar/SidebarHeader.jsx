@@ -1,6 +1,6 @@
 // Sidebar header component
 // Style Guide Part VI, Section 6.2
-// TASK-021+022: Updated to pass onCloseSidebar to ViewToggle
+// TASK-028: Simplified - hamburger moved to fixed floating button
 
 import ViewToggle from './ViewToggle';
 
@@ -8,7 +8,6 @@ export default function SidebarHeader({
   title = 'Projects',
   activeView,
   onViewChange,
-  onCloseSidebar,
 }) {
   return (
     <div className="p-4 border-b border-stone-200">
@@ -19,7 +18,6 @@ export default function SidebarHeader({
       <ViewToggle
         activeView={activeView}
         onViewChange={onViewChange}
-        onCloseSidebar={onCloseSidebar}
       />
     </div>
   );

@@ -8,7 +8,6 @@ export default function ProjectSidebar({
   projects = [],
   selectedProject,
   onSelectProject,
-  onCloseSidebar,
 }) {
   const [viewMode, setViewMode] = useState('list');
 
@@ -24,7 +23,6 @@ export default function ProjectSidebar({
         title="Projects"
         activeView={viewMode}
         onViewChange={setViewMode}
-        onCloseSidebar={onCloseSidebar}
       />
 
       <div className="flex-1 overflow-y-auto">

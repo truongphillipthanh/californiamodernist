@@ -27,10 +27,10 @@ export default function Sidebar({ isOpen, onClose, children }) {
         />
       )}
 
-      {/* Sidebar panel - 360px per Style Guide */}
+      {/* Sidebar panel - 360px, starts at left-14 to leave room for fixed hamburger */}
       <aside
         className={`
-          fixed top-16 bottom-0 left-0 z-50
+          fixed top-14 bottom-0 left-14 z-50
           w-[360px] bg-white border-r border-stone-200
           transform transition-transform duration-250 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}

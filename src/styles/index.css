@@ -21,7 +21,8 @@
   right: 16px !important;
 }
 
-/* TASK-019: Mapbox Popup Reset for HoverCard */
+/* TASK-019+029: Mapbox Popup Reset for HoverCard */
+/* TASK-029: Prevent flash at (0,0) by starting with opacity 0 */
 .hover-popup-container .mapboxgl-popup-content {
   padding: 0;
   border-radius: 4px;
@@ -34,10 +35,11 @@
 }
 
 .hover-popup-container {
-  animation: hoverCardFadeIn 200ms ease-out;
+  opacity: 0;
+  animation: hoverCardFadeIn 150ms ease-out forwards;
 }
 
 @keyframes hoverCardFadeIn {
-  from { opacity: 0; transform: translateX(-8px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
