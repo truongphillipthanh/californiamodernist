@@ -95,11 +95,17 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         setClickedProject(null);
       }
     });
+  }, []);
 
+  // Cleanup map on unmount
+  useEffect(() => {
     return () => {
-      map.current?.remove();
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
-  }, [mapStyle]);
+  }, []);
 
   // Update map style when mapStyle prop changes
   useEffect(() => {
