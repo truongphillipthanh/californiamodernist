@@ -5,7 +5,6 @@ import Map from '../components/map/Map';
 import ProjectSidebar from '../components/sidebar/ProjectSidebar';
 import Sidebar from '../components/layout/Sidebar';
 import FloatingFilters from '../components/map/FloatingFilters';
-import FloatingHomeButton from '../components/map/FloatingHomeButton';
 import MalibuBeacon from '../components/map/MalibuBeacon';
 import LayerToggle from '../components/map/LayerToggle';
 import ZoomLevelPills from '../components/map/ZoomLevelPills';
@@ -54,9 +53,6 @@ export default function MapPage() {
           <Menu size={20} className="text-stone-600" />
         </button>
       )}
-
-      {/* Floating home button - visible when sidebar is closed */}
-      <FloatingHomeButton sidebarOpen={sidebarOpen} />
 
       {/* Sidebar with ProjectSidebar content */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>

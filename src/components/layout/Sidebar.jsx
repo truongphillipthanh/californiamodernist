@@ -1,5 +1,8 @@
+// Sidebar layout component
+// Style Guide Part VI - Sidebar slides in from left (360px width)
+// TASK-021+022: Removed X button, close via hamburger in sidebar header or map click
+
 import { useEffect } from 'react';
-import { X } from 'lucide-react';
 
 export default function Sidebar({ isOpen, onClose, children }) {
   // Close on ESC key
@@ -16,33 +19,24 @@ export default function Sidebar({ isOpen, onClose, children }) {
 
   return (
     <>
-      {/* Overlay - visible when sidebar is open on all screen sizes */}
+      {/* Overlay - clicking outside sidebar (on map) closes sidebar */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/20 z-40"
+          className="fixed inset-0 bg-black/10 z-40"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar panel */}
+      {/* Sidebar panel - 360px per Style Guide */}
       <aside
         className={`
-          fixed top-16 bottom-0 left-0 z-40
-          w-[380px] bg-white border-r border-stone-200
+          fixed top-16 bottom-0 left-0 z-50
+          w-[360px] bg-white border-r border-stone-200
           transform transition-transform duration-250 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
-        {/* Close button - visible on all screen sizes */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 hover:bg-stone-100 rounded-md transition-colors z-10"
-          aria-label="Close sidebar"
-        >
-          <X size={20} className="text-stone-500" />
-        </button>
-
-        {/* Sidebar content slot */}
+        {/* Sidebar content slot - hamburger in header closes sidebar */}
         <div className="h-full overflow-y-auto">
           {children}
         </div>
