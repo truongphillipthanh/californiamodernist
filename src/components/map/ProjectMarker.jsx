@@ -1,3 +1,4 @@
+// TASK-033: Inverted colors (light bg, dark text) + increased padding
 import React from 'react';
 
 const STATUS_COLORS = {
@@ -34,18 +35,19 @@ export default function ProjectMarker({
         transition: 'transform 100ms ease-out',
       }}
     >
-      {/* Marker Body */}
+      {/* Marker Body - TASK-033: Light background, dark text, more padding */}
       <div
-        className="flex items-center justify-center gap-1.5"
+        className="flex items-center justify-center gap-2"
         style={{
-          backgroundColor: '#1C1917',
-          padding: '6px 12px',
+          backgroundColor: '#FAFAF9',
+          padding: '8px 14px',
           borderRadius: '4px',
+          border: '1px solid #E7E5E4',
           boxShadow: isEmphasized
-            ? `0 0 12px 2px ${statusColor}33, 0 2px 8px rgba(0,0,0,0.3)`
+            ? `0 0 12px 2px ${statusColor}33, 0 2px 8px rgba(0,0,0,0.15)`
             : isHovered
-              ? '0 4px 12px rgba(0,0,0,0.25)'
-              : '0 2px 6px rgba(0,0,0,0.2)',
+              ? '0 4px 12px rgba(0,0,0,0.15)'
+              : '0 2px 6px rgba(0,0,0,0.1)',
         }}
       >
         {/* Status Dot */}
@@ -67,7 +69,7 @@ export default function ProjectMarker({
             fontWeight: 600,
             textTransform: 'uppercase',
             letterSpacing: '0.1em',
-            color: '#FAFAF9',
+            color: '#1C1917',
             lineHeight: 1,
             whiteSpace: 'nowrap',
           }}
@@ -76,7 +78,7 @@ export default function ProjectMarker({
         </span>
       </div>
 
-      {/* Pointer Arrow */}
+      {/* Pointer Arrow - TASK-033: Updated to match light background */}
       <div className="flex justify-center">
         <div
           style={{
@@ -84,7 +86,8 @@ export default function ProjectMarker({
             height: 0,
             borderLeft: '6px solid transparent',
             borderRight: '6px solid transparent',
-            borderTop: '8px solid #1C1917',
+            borderTop: '8px solid #FAFAF9',
+            filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.1))',
           }}
         />
       </div>

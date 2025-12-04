@@ -52,20 +52,8 @@ export default function Header() {
 
   return (
     <header className="h-14 bg-white border-b border-stone-200 flex items-center px-4 relative z-50">
-      {/* LEFT SECTION: Home + Logo */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate('/')}
-          className={`p-2 rounded-md transition-colors duration-100 ${
-            isMapPage
-              ? 'text-stone-900 bg-stone-100'
-              : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'
-          }`}
-          title="Return to Map"
-        >
-          <HomeIcon className="w-5 h-5" />
-        </button>
-
+      {/* LEFT SECTION: Logo only (TASK-030) */}
+      <div className="flex items-center">
         <a
           href="https://www.californiamodernist.com/"
           target="_blank"
@@ -81,18 +69,31 @@ export default function Header() {
         </a>
       </div>
 
-      {/* CENTER SECTION: Search Bar */}
+      {/* CENTER SECTION: Home Icon + Search Bar (TASK-030) */}
       <div className="flex-1 flex justify-center px-8">
-        <div className="relative w-full max-w-md">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
-          <input
-            type="text"
-            placeholder="Search projects, address..."
-            className="w-full h-9 pl-10 pr-4 bg-stone-100 border border-stone-200 rounded-md
-                       text-sm text-stone-700 placeholder:text-stone-400
-                       focus:outline-none focus:ring-2 focus:ring-stone-300 focus:border-transparent
-                       transition-all duration-100"
-          />
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/')}
+            className={`p-2 rounded-md transition-colors duration-100 ${
+              isMapPage
+                ? 'text-stone-900 bg-stone-100'
+                : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'
+            }`}
+            title="Return to Map"
+          >
+            <HomeIcon className="w-5 h-5" />
+          </button>
+          <div className="relative w-full max-w-md">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+            <input
+              type="text"
+              placeholder="Search projects, address..."
+              className="w-full h-9 pl-10 pr-4 bg-stone-100 border border-stone-200 rounded-md
+                         text-sm text-stone-700 placeholder:text-stone-400
+                         focus:outline-none focus:ring-2 focus:ring-stone-300 focus:border-transparent
+                         transition-all duration-100"
+            />
+          </div>
         </div>
       </div>
 

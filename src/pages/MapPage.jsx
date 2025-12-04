@@ -43,16 +43,14 @@ export default function MapPage() {
 
   return (
     <div className="h-[calc(100vh-64px)] relative">
-      {/* Floating hamburger button - visible when sidebar is closed */}
-      {!sidebarOpen && (
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed top-20 left-4 z-30 p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-          aria-label="Open sidebar"
-        >
-          <Menu size={20} className="text-stone-600" />
-        </button>
-      )}
+      {/* Floating hamburger button - ALWAYS visible at fixed position (TASK-028) */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="fixed top-20 left-4 z-[60] p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+        aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        <Menu size={20} className="text-stone-600" />
+      </button>
 
       {/* Sidebar with ProjectSidebar content */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
