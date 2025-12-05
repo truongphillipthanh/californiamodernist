@@ -1,3 +1,4 @@
+// TASK-041: Moved "Projects" label to footer for consistent hamburger position
 import { useState } from 'react';
 import SidebarHeader from './SidebarHeader';
 import ProjectList from './ProjectList';
@@ -20,13 +21,14 @@ export default function ProjectSidebar({
 
   return (
     <div className="h-full flex flex-col">
+      {/* TASK-041: Header with controls only - no title above */}
       <SidebarHeader
-        title="Projects"
         activeView={viewMode}
         onViewChange={setViewMode}
         onCloseSidebar={onCloseSidebar}
       />
 
+      {/* Scrollable project list */}
       <div className="flex-1 overflow-y-auto">
         {projects.length > 0 ? (
           <ViewComponent
@@ -39,6 +41,11 @@ export default function ProjectSidebar({
             No projects found
           </div>
         )}
+      </div>
+
+      {/* TASK-041: Footer with project count */}
+      <div className="p-3 border-t border-stone-200 text-xs text-stone-500">
+        {projects.length} {projects.length === 1 ? 'Project' : 'Projects'}
       </div>
     </div>
   );
