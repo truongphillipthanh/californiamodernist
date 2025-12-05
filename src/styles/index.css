@@ -36,11 +36,20 @@
 
 .hover-popup-container {
   opacity: 0;
-  animation: hoverCardFadeIn 150ms ease-out forwards;
-  animation-delay: 10ms;
+  visibility: hidden;
+  animation: hoverCardFadeIn 100ms ease-out forwards;
+  animation-delay: 50ms; /* Wait for Mapbox to position popup */
 }
 
 @keyframes hoverCardFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    visibility: visible;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }
