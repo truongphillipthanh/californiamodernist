@@ -102,6 +102,11 @@ export async function getMapMarkers() {
   await delay(100);
   return projects.map((project) => {
     const parcel = parcels.find((p) => p.id === project.parcelId);
+    // Build zones array from parcel data
+    const zones = [];
+    if (parcel?.coastal) zones.push('coastal');
+    if (parcel?.fireZone) zones.push('fire');
+    // Add landslide zone if present (future data)
     return {
       id: project.id,
       name: project.name,
@@ -109,6 +114,7 @@ export async function getMapMarkers() {
       status: project.status,
       phase: project.phase,
       type: project.type,
+      zones, // TASK-051: Add zones for filtering
       coordinates: parcel?.coordinates || { lng: -118.75, lat: 34.03 },
       address: parcel?.address || '',
     };

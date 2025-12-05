@@ -1,25 +1,24 @@
 // Floating Filters - Center-top filter controls with 4 dropdown pills
 // Style Guide Part II (Stone palette), Part VII (Interactions)
 // Position: center-top, below header (top: 80px)
+// TASK-051: Wired to filter map markers
 
-import { useState } from 'react';
 import FilterDropdown from '../ui/FilterDropdown';
 
 const statusOptions = [
   { id: 'all', label: 'All Status' },
-  { id: 'blocked', label: 'Blocked' },
-  { id: 'waiting', label: 'Waiting' },
   { id: 'active', label: 'Active' },
+  { id: 'pending', label: 'Pending' },
   { id: 'complete', label: 'Complete' },
 ];
 
 const phaseOptions = [
   { id: 'all', label: 'All Phases' },
-  { id: 'planning', label: 'Planning Review' },
-  { id: 'plancheck', label: 'Plan Check' },
-  { id: 'approval', label: 'Approval Pending' },
-  { id: 'issue', label: 'Issue Resolution' },
-  { id: 'permit', label: 'Permit Issued' },
+  { id: 'pre_design', label: 'Pre-Design' },
+  { id: 'design', label: 'Design' },
+  { id: 'permitting', label: 'Permitting' },
+  { id: 'construction', label: 'Construction' },
+  { id: 'closeout', label: 'Closeout' },
 ];
 
 const zoneOptions = [
@@ -31,33 +30,16 @@ const zoneOptions = [
 
 const typeOptions = [
   { id: 'all', label: 'All Types' },
-  { id: 'new', label: 'New Construction' },
-  { id: 'fire', label: 'Fire Rebuild' },
+  { id: 'new_construction', label: 'New Construction' },
+  { id: 'fire_reconstruction', label: 'Fire Rebuild' },
   { id: 'addition', label: 'Addition' },
   { id: 'renovation', label: 'Renovation' },
 ];
 
 export default function FloatingFilters({ filters, onFilterChange }) {
-  const [statusFilter, setStatusFilter] = useState(filters?.status || 'all');
-  const [phaseFilter, setPhaseFilter] = useState(filters?.phase || 'all');
-  const [zoneFilter, setZoneFilter] = useState(filters?.zone || 'all');
-  const [typeFilter, setTypeFilter] = useState(filters?.type || 'all');
-
+  // Use parent state directly - no local state duplication
   const handleFilterChange = (filterType, value) => {
-    const newFilters = {
-      status: statusFilter,
-      phase: phaseFilter,
-      zone: zoneFilter,
-      type: typeFilter,
-      [filterType]: value,
-    };
-
-    if (filterType === 'status') setStatusFilter(value);
-    if (filterType === 'phase') setPhaseFilter(value);
-    if (filterType === 'zone') setZoneFilter(value);
-    if (filterType === 'type') setTypeFilter(value);
-
-    onFilterChange?.(newFilters);
+    onFilterChange?.({ ...filters, [filterType]: value });
   };
 
   return (
@@ -66,25 +48,25 @@ export default function FloatingFilters({ filters, onFilterChange }) {
         <FilterDropdown
           label="All Status"
           options={statusOptions}
-          value={statusFilter}
+          value={filters.status}
           onChange={(value) => handleFilterChange('status', value)}
         />
         <FilterDropdown
           label="All Phases"
           options={phaseOptions}
-          value={phaseFilter}
+          value={filters.phase}
           onChange={(value) => handleFilterChange('phase', value)}
         />
         <FilterDropdown
           label="All Zones"
           options={zoneOptions}
-          value={zoneFilter}
+          value={filters.zone}
           onChange={(value) => handleFilterChange('zone', value)}
         />
         <FilterDropdown
           label="All Types"
           options={typeOptions}
-          value={typeFilter}
+          value={filters.type}
           onChange={(value) => handleFilterChange('type', value)}
         />
       </div>

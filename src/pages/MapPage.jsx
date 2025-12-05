@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import Map from '../components/map/Map';
@@ -63,6 +63,32 @@ export default function MapPage() {
       setMarkers(markersData);
     });
   }, []);
+
+  // ═══════════════════════════════════════════════════════════════
+  // FILTER MARKERS — TASK-051: Filter markers based on dropdown selections
+  // ═══════════════════════════════════════════════════════════════
+  const filteredMarkers = useMemo(() => {
+    return markers.filter((marker) => {
+      // Status filter
+      if (filters.status !== 'all' && marker.status !== filters.status) return false;
+      // Phase filter
+      if (filters.phase !== 'all' && marker.phase !== filters.phase) return false;
+      // Zone filter - check if marker has this zone in its zones array
+      if (filters.zone !== 'all') {
+        const hasZone = marker.zones?.some(z =>
+          z.toLowerCase().includes(filters.zone.toLowerCase())
+        );
+        if (!hasZone) return false;
+      }
+      // Type filter
+      if (filters.type !== 'all' && marker.type !== filters.type) return false;
+      return true;
+    });
+  }, [markers, filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
   const handleProjectSelect = (project) => {
     setSelectedProject(project);
@@ -132,7 +158,7 @@ export default function MapPage() {
       {/* Floating map controls */}
       <FloatingFilters
         filters={filters}
-        onFilterChange={setFilters}
+        onFilterChange={handleFilterChange}
       />
 
       <MalibuBeacon />
@@ -151,7 +177,7 @@ export default function MapPage() {
       <div className="absolute inset-0">
         <Map
           ref={mapRef}
-          markers={markers}
+          markers={filteredMarkers}
           onProjectSelect={handleProjectNavigate}
           mapStyle={mapStyle}
         />
