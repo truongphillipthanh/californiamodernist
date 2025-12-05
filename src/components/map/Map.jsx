@@ -180,7 +180,8 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       return true;
     });
 
-    if (hoveredProject && !clickedProject) {
+    // Only render hover popup if we have valid coordinates
+    if (hoveredProject && !clickedProject && hoveredProject.coordinates?.lng && hoveredProject.coordinates?.lat) {
       const popupEl = document.createElement('div');
       popupEl.classList.add('hover-popup');
       const root = createRoot(popupEl);
@@ -197,6 +198,7 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         closeOnClick: false,
         offset: 15,
         className: 'hover-popup-container',
+        anchor: 'bottom', // Anchor popup above the marker
       })
         .setLngLat([hoveredProject.coordinates.lng, hoveredProject.coordinates.lat])
         .setDOMContent(popupEl)
