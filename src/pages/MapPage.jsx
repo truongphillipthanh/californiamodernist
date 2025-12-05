@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import Map from '../components/map/Map';
@@ -10,6 +10,41 @@ import LayerToggle from '../components/map/LayerToggle';
 import ZoomLevelPills from '../components/map/ZoomLevelPills';
 import { getProjects, getMapMarkers } from '../lib/api';
 
+// ═══════════════════════════════════════════════════════════════
+// ZOOM LEVEL CONFIGURATION — Google Earth-style cinematic views
+// Style Guide Part VII, lines 513, 527-540
+// ═══════════════════════════════════════════════════════════════
+const ZOOM_VIEWS = {
+  coastline: {
+    center: [-118.78, 34.02],
+    zoom: 11.5,
+    pitch: 0,
+    bearing: 0,
+    duration: 2000
+  },
+  neighborhood: {
+    center: [-118.77, 34.025],
+    zoom: 14,
+    pitch: 45,
+    bearing: -15,
+    duration: 1800
+  },
+  parcel: {
+    center: [-118.765, 34.032],
+    zoom: 17,
+    pitch: 60,
+    bearing: 30,
+    duration: 1500
+  }
+};
+
+// Cinematic easing function (cubic ease-in-out)
+const cinematicEasing = (t) => {
+  return t < 0.5
+    ? 4 * t * t * t
+    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+};
+
 export default function MapPage() {
   const [projects, setProjects] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -18,6 +53,8 @@ export default function MapPage() {
   const [filters, setFilters] = useState({ status: 'all', phase: 'all', zone: 'all', type: 'all' });
   const [activeLayer, setActiveLayer] = useState('satellite');
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/satellite-streets-v12');
+  const [activeZoom, setActiveZoom] = useState('coastline');
+  const mapRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +77,33 @@ export default function MapPage() {
     setActiveLayer(layerId);
     setMapStyle(style);
   };
+
+  // ═══════════════════════════════════════════════════════════════
+  // ZOOM LEVEL CONTROL — Cinematic flyTo transitions
+  // ═══════════════════════════════════════════════════════════════
+  const handleZoomChange = useCallback((level) => {
+    if (!mapRef.current) return;
+
+    const view = ZOOM_VIEWS[level];
+    const map = mapRef.current;
+
+    // If a project is selected, use its coordinates, else use view center
+    const center = selectedProject?.coordinates
+      ? [selectedProject.coordinates.lng, selectedProject.coordinates.lat]
+      : view.center;
+
+    map.flyTo({
+      center: center,
+      zoom: view.zoom,
+      pitch: view.pitch,
+      bearing: view.bearing,
+      duration: view.duration,
+      essential: true,
+      easing: cinematicEasing
+    });
+
+    setActiveZoom(level);
+  }, [selectedProject]);
 
   return (
     <div className="h-[calc(100vh-64px)] relative">
@@ -78,11 +142,15 @@ export default function MapPage() {
         onLayerChange={handleLayerChange}
       />
 
-      <ZoomLevelPills />
+      <ZoomLevelPills
+        activeLevel={activeZoom}
+        onZoomChange={handleZoomChange}
+      />
 
       {/* Map - full width */}
       <div className="absolute inset-0">
         <Map
+          ref={mapRef}
           markers={markers}
           onProjectSelect={handleProjectNavigate}
           mapStyle={mapStyle}

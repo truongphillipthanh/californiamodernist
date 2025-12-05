@@ -2,8 +2,9 @@
 // Style Guide Part V (Component Patterns) and Part VII (Interaction Patterns)
 // TASK-019: Hover card singleton with 200ms dismissal delay
 // TASK-040: Fixed hover card positioning - use viewport coordinates, not Mapbox Popup
+// TASK-050: Expose map ref via forwardRef for parent zoom control
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { createRoot } from 'react-dom/client';
 import mapboxgl from 'mapbox-gl';
 import ProjectMarker from './ProjectMarker';
@@ -12,7 +13,7 @@ import ClickCard from './ClickCard';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/satellite-streets-v12' }) {
+const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/satellite-streets-v12' }, ref) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markersRef = useRef([]);
@@ -25,6 +26,10 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const [hoverPosition, setHoverPosition] = useState(null); // { x, y } viewport coords
   const [clickedProject, setClickedProject] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
+
+  // TASK-050: Expose map instance to parent for flyTo control
+  useImperativeHandle(ref, () => map.current, [mapReady]);
 
   // Get the full project object for the hovered project
   const hoveredProject = hoveredProjectId
@@ -100,6 +105,11 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       if (e.originalEvent.target === mapContainer.current.querySelector('canvas')) {
         setClickedProject(null);
       }
+    });
+
+    // TASK-050: Signal map is ready for ref forwarding
+    map.current.on('load', () => {
+      setMapReady(true);
     });
   }, []);
 
@@ -233,4 +243,6 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       )}
     </>
   );
-}
+});
+
+export default Map;
