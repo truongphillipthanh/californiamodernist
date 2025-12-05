@@ -1,6 +1,7 @@
 // HoverCard: Hover popup on marker hover
 // Style Guide Part V, Section 5.3
 // TASK-019: Updated with mouse event handlers for singleton pattern
+// TASK-040: Fixed positioning using viewport coordinates (no more (0,0) flash)
 // 280px wide, shows photo, name, address, status row
 // Appears with 200ms transition
 
@@ -15,16 +16,24 @@ const STATUS_COLORS = {
   pending: { bg: 'bg-amber-500', text: 'text-white', label: 'PENDING' },
 };
 
-export default function HoverCard({ project, onMouseEnter, onMouseLeave }) {
+export default function HoverCard({ project, position, onMouseEnter, onMouseLeave }) {
+  // TASK-040: Don't render if no valid position or project
+  if (!position || !project) return null;
+
   const status = STATUS_COLORS[project.status] || STATUS_COLORS.active;
 
   return (
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className="w-[280px] bg-white rounded shadow-lg overflow-hidden"
-      style={{ padding: 0, margin: 0 }}
+      className="fixed z-50 pointer-events-auto"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        transform: 'translate(-50%, -100%) translateY(-12px)', // Center above marker
+      }}
     >
+      <div className="w-[280px] bg-white rounded shadow-lg overflow-hidden">
       {/* Image Area — 16:9 */}
       <div className="w-full aspect-video bg-stone-200 relative">
         {project.image ? (
@@ -67,6 +76,7 @@ export default function HoverCard({ project, onMouseEnter, onMouseLeave }) {
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

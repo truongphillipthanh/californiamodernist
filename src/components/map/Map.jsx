@@ -1,6 +1,7 @@
 // Map component - Mapbox GL JS integration
 // Style Guide Part V (Component Patterns) and Part VII (Interaction Patterns)
 // TASK-019: Hover card singleton with 200ms dismissal delay
+// TASK-040: Fixed hover card positioning - use viewport coordinates, not Mapbox Popup
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -19,9 +20,10 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   const hoverTimeoutRef = useRef(null);
 
   // ═══════════════════════════════════════════════════════════════
-  // HOVER STATE — Single ID, not an array
+  // HOVER STATE — Single ID + viewport position
   // ═══════════════════════════════════════════════════════════════
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState(null); // { x, y } viewport coords
   const [clickedProject, setClickedProject] = useState(null);
 
   // Get the full project object for the hovered project
@@ -33,17 +35,20 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   // HOVER HANDLERS
   // ═══════════════════════════════════════════════════════════════
 
-  const handleMarkerEnter = useCallback((projectId) => {
+  // TASK-040: Pass position with the project ID for fixed positioning
+  const handleMarkerEnter = useCallback((projectId, position) => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    setHoverPosition(position);  // Set position FIRST
     setHoveredProjectId(projectId);
   }, []);
 
   const handleMarkerLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredProjectId(null);
+      setHoverPosition(null);
       hoverTimeoutRef.current = null;
     }, 200);
   }, []);
@@ -58,6 +63,7 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
   const handleCardLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredProjectId(null);
+      setHoverPosition(null);
       hoverTimeoutRef.current = null;
     }, 200);
   }, []);
@@ -147,9 +153,14 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         .setLngLat([project.coordinates.lng, project.coordinates.lat])
         .addTo(map.current);
 
-      // Hover events
+      // TASK-040: Hover events with viewport position calculation
       markerEl.addEventListener('mouseenter', () => {
-        handleMarkerEnter(project.id);
+        const rect = markerEl.getBoundingClientRect();
+        const position = {
+          x: rect.left + rect.width / 2,  // Center of marker
+          y: rect.top                      // Top of marker
+        };
+        handleMarkerEnter(project.id, position);
       });
 
       markerEl.addEventListener('mouseleave', () => {
@@ -160,53 +171,16 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
       markerEl.addEventListener('click', (e) => {
         e.stopPropagation();
         setClickedProject(project);
-        setHoveredProjectId(null); // Hide hover card when clicked
+        setHoveredProjectId(null);
+        setHoverPosition(null);
       });
 
       markersRef.current.push(marker);
     });
   }, [markers, hoveredProjectId, handleMarkerEnter, handleMarkerLeave]);
 
-  // Handle hover popup - SINGLETON PATTERN
-  useEffect(() => {
-    if (!map.current) return;
-
-    // Clear ALL previous hover popups to ensure singleton
-    popupsRef.current = popupsRef.current.filter((popup) => {
-      if (popup._content?.classList?.contains('hover-popup')) {
-        popup.remove();
-        return false;
-      }
-      return true;
-    });
-
-    // Only render hover popup if we have valid coordinates
-    if (hoveredProject && !clickedProject && hoveredProject.coordinates?.lng && hoveredProject.coordinates?.lat) {
-      const popupEl = document.createElement('div');
-      popupEl.classList.add('hover-popup');
-      const root = createRoot(popupEl);
-      root.render(
-        <HoverCard
-          project={hoveredProject}
-          onMouseEnter={handleCardEnter}
-          onMouseLeave={handleCardLeave}
-        />
-      );
-
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: 15,
-        className: 'hover-popup-container',
-        anchor: 'bottom', // Anchor popup above the marker
-      })
-        .setLngLat([hoveredProject.coordinates.lng, hoveredProject.coordinates.lat])
-        .setDOMContent(popupEl)
-        .addTo(map.current);
-
-      popupsRef.current.push(popup);
-    }
-  }, [hoveredProject, clickedProject, handleCardEnter, handleCardLeave]);
+  // TASK-040: Hover card is now rendered as React component with fixed positioning
+  // (no more Mapbox Popup for hover - eliminates (0,0) flash)
 
   // Handle click popup
   useEffect(() => {
@@ -244,5 +218,19 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
     }
   }, [clickedProject, onProjectSelect]);
 
-  return <div ref={mapContainer} className="absolute inset-0" />;
+  return (
+    <>
+      <div ref={mapContainer} className="absolute inset-0" />
+
+      {/* TASK-040: Hover card rendered with fixed positioning (outside Mapbox container) */}
+      {hoveredProject && hoverPosition && !clickedProject && (
+        <HoverCard
+          project={hoveredProject}
+          position={hoverPosition}
+          onMouseEnter={handleCardEnter}
+          onMouseLeave={handleCardLeave}
+        />
+      )}
+    </>
+  );
 }
