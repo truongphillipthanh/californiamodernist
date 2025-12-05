@@ -18,7 +18,7 @@ export default function ProjectPage() {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-64px)] flex items-center justify-center">
+      <div className="h-[calc(100vh-72px)] flex items-center justify-center">
         <p className="text-stone-400">Loading...</p>
       </div>
     );
@@ -26,14 +26,14 @@ export default function ProjectPage() {
 
   if (!project) {
     return (
-      <div className="h-[calc(100vh-64px)] flex items-center justify-center">
+      <div className="h-[calc(100vh-72px)] flex items-center justify-center">
         <p className="text-stone-400">Project not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-stone-50">
+    <div className="min-h-[calc(100vh-72px)] bg-stone-50">
       {/* Back link */}
       <div className="bg-white border-b border-stone-200 px-6 py-3">
         <Link

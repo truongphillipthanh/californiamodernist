@@ -67,21 +67,16 @@ export default function Header() {
   }, [avatarMenuOpen]);
 
   return (
-    <header className="h-16 bg-white border-b border-stone-200 flex items-center px-4 fixed top-0 left-0 right-0 z-50">
-      {/* LEFT SECTION: Logo only (TASK-030) */}
+    <header className="h-[72px] bg-white border-b border-stone-200 flex items-center px-6 fixed top-0 left-0 right-0 z-50">
+      {/* LEFT SECTION: Logo only (TASK-030, TASK-053: 72px header, kerned logo) */}
       <div className="flex items-center">
         <a
           href="https://www.californiamodernist.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-col leading-tight hover:opacity-80 transition-opacity"
+          className="text-[15px] font-semibold tracking-[0.12em] uppercase text-stone-900 whitespace-nowrap hover:text-stone-700 transition-colors"
         >
-          <span className="text-xs font-semibold tracking-wide text-stone-900 uppercase">
-            California
-          </span>
-          <span className="text-xs font-semibold tracking-wide text-stone-900 uppercase">
-            Modernist
-          </span>
+          California Modernist Design
         </a>
       </div>
 

@@ -132,7 +132,7 @@ export default function MapPage() {
   }, [selectedProject]);
 
   return (
-    <div className="h-[calc(100vh-64px)] relative">
+    <div className="h-[calc(100vh-72px)] relative">
       {/* Floating hamburger button - HIDDEN when sidebar is open (TASK-036) */}
       {/* When sidebar opens, hamburger moves into sidebar header via ViewToggle */}
       {!sidebarOpen && (

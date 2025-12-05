@@ -59,7 +59,7 @@ export default function CRMPage() {
   }, [contacts, activeType, searchQuery]);
 
   return (
-    <div className="h-[calc(100vh-64px)] flex">
+    <div className="h-[calc(100vh-72px)] flex">
       {/* Left panel: Contact list (1/3) */}
       <div className="w-1/3 min-w-[320px] max-w-[400px] border-r border-stone-200 bg-white flex flex-col">
         {/* Header */}

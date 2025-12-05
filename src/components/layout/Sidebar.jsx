@@ -1,6 +1,7 @@
 // Sidebar layout component
 // Style Guide Part VI - Sidebar slides in from left (360px width)
 // TASK-021+022: Removed X button, close via hamburger in sidebar header or map click
+// TASK-053: Updated top offset from 64px to 72px for taller header
 
 import { useEffect } from 'react';
 
@@ -30,7 +31,7 @@ export default function Sidebar({ isOpen, onClose, children }) {
       {/* Sidebar panel - 360px per Style Guide */}
       <aside
         className={`
-          fixed top-16 bottom-0 left-0 z-50
+          fixed top-[72px] bottom-0 left-0 z-50
           w-[360px] bg-white border-r border-stone-200
           transform transition-transform duration-250 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
