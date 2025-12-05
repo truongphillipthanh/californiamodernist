@@ -51,8 +51,8 @@ export default function MapPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filters, setFilters] = useState({ status: 'all', phase: 'all', zone: 'all', type: 'all' });
-  const [activeLayer, setActiveLayer] = useState('satellite');
-  const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/satellite-streets-v12');
+  const [activeLayer, setActiveLayer] = useState('map');
+  const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/light-v11');
   const [activeZoom, setActiveZoom] = useState('coastline');
   const mapRef = useRef(null);
   const navigate = useNavigate();

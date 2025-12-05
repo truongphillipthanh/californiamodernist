@@ -13,7 +13,7 @@ import ClickCard from './ClickCard';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/satellite-streets-v12' }, ref) {
+const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/light-v11' }, ref) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markersRef = useRef([]);
