@@ -15,10 +15,11 @@
   }
 }
 
-/* TASK-015: Align Mapbox controls to bottom: 24px baseline */
+/* TASK-044: Position Mapbox controls ABOVE Zoom Pills with 4px gap */
+/* Zoom Pills: bottom 24px + ~40px height + 4px gap = 68px */
 .mapboxgl-ctrl-bottom-right {
-  bottom: 24px !important;
-  right: 16px !important;
+  bottom: 68px !important;
+  right: 24px !important;
 }
 
 /* TASK-019 + TASK-029: Mapbox Popup Reset for HoverCard */

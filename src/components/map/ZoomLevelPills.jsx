@@ -1,7 +1,6 @@
 // Zoom Level Pills - Bottom-right zoom level indicators
 // Style Guide Part X, Section 10.4
-// TASK-025: Aligned to bottom: 24px baseline, 16px gap from Mapbox controls
-// TASK-043: Match LayerToggle typography (text-sm font-medium), right-aligned
+// TASK-043: Positioned BELOW Mapbox controls, right edge aligned, 4px gap
 
 const zoomLevels = [
   { id: 'coastline', label: 'Coastline' },
@@ -10,9 +9,9 @@ const zoomLevels = [
 ];
 
 export default function ZoomLevelPills({ activeLevel = 'neighborhood' }) {
-  // Position: bottom-right, left of Mapbox +/- controls
+  // Position: bottom-right, BELOW Mapbox +/- controls, right edge aligned
   return (
-    <div className="fixed bottom-6 right-[77px] z-20 pointer-events-auto">
+    <div className="fixed bottom-6 right-6 z-20 pointer-events-auto">{/* bottom-6 = 24px, right-6 = 24px */}
       <div className="bg-white rounded-lg shadow-lg p-1 flex items-center gap-1">
         {zoomLevels.map((level) => (
           <span
