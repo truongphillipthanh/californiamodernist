@@ -193,16 +193,21 @@ export default function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox:
         />
       );
 
+      // TASK-040: Create popup with proper positioning
+      // Set coordinates FIRST, then add content, then add to map
       const popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
-        offset: 15,
+        offset: [0, -15], // Offset upward from marker
         className: 'hover-popup-container',
         anchor: 'bottom', // Anchor popup above the marker
-      })
-        .setLngLat([hoveredProject.coordinates.lng, hoveredProject.coordinates.lat])
-        .setDOMContent(popupEl)
-        .addTo(map.current);
+        maxWidth: 'none', // Prevent width constraints
+      });
+
+      // Set position before adding to map to prevent (0,0) flash
+      popup.setLngLat([hoveredProject.coordinates.lng, hoveredProject.coordinates.lat]);
+      popup.setDOMContent(popupEl);
+      popup.addTo(map.current);
 
       popupsRef.current.push(popup);
     }
