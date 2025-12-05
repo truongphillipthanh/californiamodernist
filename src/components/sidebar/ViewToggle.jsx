@@ -1,18 +1,14 @@
 // View mode toggle for sidebar
 // Style Guide Part VI, Section 6.2 - View Toggle Component
-// TASK-021+022: Hamburger closes sidebar, Card/Photo switch views
+// TASK-036: Hamburger ALWAYS closes sidebar (unified hamburger pattern)
 // Icons: ☰ (closes sidebar) | ▤ (Card) | ▦ (Photo)
 
 import { Menu, LayoutGrid, Image, ArrowUpDown } from 'lucide-react';
 
 export default function ViewToggle({ activeView, onViewChange, onCloseSidebar }) {
-  // Handle hamburger click - closes sidebar when in list view
+  // Handle hamburger click - ALWAYS closes sidebar (TASK-036)
   const handleHamburgerClick = () => {
-    if (activeView === 'list') {
-      onCloseSidebar?.();
-    } else {
-      onViewChange('list');
-    }
+    onCloseSidebar?.();
   };
 
   // Handle Card/Photo click - toggle or switch view
@@ -29,18 +25,12 @@ export default function ViewToggle({ activeView, onViewChange, onCloseSidebar })
     <div className="flex items-center justify-between w-full gap-3">
       {/* View toggle pill group - ☰ | ▤ | ▦ */}
       <div className="inline-flex rounded-md overflow-hidden border border-stone-200">
-        {/* Hamburger - closes sidebar or switches to list */}
+        {/* Hamburger - ALWAYS closes sidebar (TASK-036 unified hamburger) */}
         <button
           onClick={handleHamburgerClick}
-          className={`
-            flex items-center justify-center p-2 transition-colors
-            ${activeView === 'list'
-              ? 'bg-stone-200'
-              : 'bg-white hover:bg-stone-100'
-            }
-          `}
-          title={activeView === 'list' ? 'Close sidebar' : 'List view'}
-          aria-label={activeView === 'list' ? 'Close sidebar' : 'List view'}
+          className="flex items-center justify-center p-2 transition-colors bg-white hover:bg-stone-100"
+          title="Close sidebar"
+          aria-label="Close sidebar"
         >
           <Menu size={20} className="text-stone-600" />
         </button>
