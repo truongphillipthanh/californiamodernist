@@ -1,24 +1,32 @@
 // Zoom Level Pills - Bottom-right zoom level indicators
 // Style Guide Part X, Section 10.4
 // TASK-025: Aligned to bottom: 24px baseline, 16px gap from Mapbox controls
+// TASK-043: Match LayerToggle typography (text-sm font-medium), right-aligned
 
-const zoomLevels = ['COASTLINE', 'NEIGHBORHOOD', 'PARCEL'];
+const zoomLevels = [
+  { id: 'coastline', label: 'Coastline' },
+  { id: 'neighborhood', label: 'Neighborhood' },
+  { id: 'parcel', label: 'Parcel' },
+];
 
-export default function ZoomLevelPills() {
-  // Position: bottom 24px, right edge at 16px + 29px (Mapbox ctrl) + 16px (gap) = 61px
-  // Using right-[77px] to account for Mapbox control width (~45px) + 16px gap + buffer
+export default function ZoomLevelPills({ activeLevel = 'neighborhood' }) {
+  // Position: bottom-right, left of Mapbox +/- controls
   return (
     <div className="fixed bottom-6 right-[77px] z-20 pointer-events-auto">
-      <div className="bg-white rounded-lg shadow-lg px-2 py-1 flex items-center gap-1">
-        {zoomLevels.map((level, index) => (
-          <div key={level} className="flex items-center">
-            <span className="px-2 py-1 text-xs font-mono text-stone-500 uppercase tracking-wide">
-              {level}
-            </span>
-            {index < zoomLevels.length - 1 && (
-              <div className="w-px h-3 bg-stone-200" />
-            )}
-          </div>
+      <div className="bg-white rounded-lg shadow-lg p-1 flex items-center gap-1">
+        {zoomLevels.map((level) => (
+          <span
+            key={level.id}
+            className={`
+              px-4 py-2 rounded-md text-sm font-medium transition-colors
+              ${activeLevel === level.id
+                ? 'bg-stone-800 text-white'
+                : 'text-stone-600'
+              }
+            `}
+          >
+            {level.label}
+          </span>
         ))}
       </div>
     </div>
