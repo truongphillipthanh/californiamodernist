@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 // Icon Components
@@ -47,8 +47,24 @@ const PlusIcon = ({ className = "w-4 h-4" }) => (
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
+  const avatarMenuRef = useRef(null);
 
   const isMapPage = location.pathname === '/' || location.pathname === '/map';
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(event.target)) {
+        setAvatarMenuOpen(false);
+      }
+    };
+
+    if (avatarMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [avatarMenuOpen]);
 
   return (
     <header className="h-16 bg-white border-b border-stone-200 flex items-center px-4 fixed top-0 left-0 right-0 z-50">
@@ -141,18 +157,10 @@ export default function Header() {
 
         <div className="w-px h-6 bg-stone-200 mx-2" />
 
-        <button
-          onClick={() => {}}
-          className="flex items-center gap-1.5 h-8 px-3 bg-green-600 hover:bg-green-700
-                     text-white text-sm font-medium rounded-md transition-colors duration-100"
-        >
-          <PlusIcon className="w-4 h-4" />
-          <span>NEW PROJECT</span>
-        </button>
-
-        <div className="pl-3 pr-4">
+        {/* Avatar with dropdown menu (TASK-038) */}
+        <div className="relative" ref={avatarMenuRef}>
           <button
-            onClick={() => {}}
+            onClick={() => setAvatarMenuOpen(!avatarMenuOpen)}
             className="w-8 h-8 rounded-md bg-stone-800 text-stone-100
                        text-xs font-semibold flex items-center justify-center
                        hover:bg-stone-700 transition-colors duration-100"
@@ -160,6 +168,41 @@ export default function Header() {
           >
             FT
           </button>
+
+          {/* Dropdown menu */}
+          {avatarMenuOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg border border-stone-200 py-1 z-50 animate-in fade-in duration-200">
+              <button
+                onClick={() => {
+                  setAvatarMenuOpen(false);
+                  // TODO: Open new project modal
+                }}
+                className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-100 flex items-center gap-2 transition-colors"
+              >
+                <PlusIcon className="w-4 h-4" />
+                New Project
+              </button>
+              <div className="border-t border-stone-200 my-1" />
+              <button
+                onClick={() => {
+                  setAvatarMenuOpen(false);
+                  // TODO: Open settings
+                }}
+                className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-100 transition-colors"
+              >
+                Settings
+              </button>
+              <button
+                onClick={() => {
+                  setAvatarMenuOpen(false);
+                  // TODO: Sign out
+                }}
+                className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-100 transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
