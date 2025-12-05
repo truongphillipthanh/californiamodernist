@@ -35,12 +35,12 @@ export default function ProjectMarker({
         transition: 'transform 100ms ease-out',
       }}
     >
-      {/* Marker Body - TASK-033: Light background, dark text, more padding */}
+      {/* Marker Body - TASK-033+039: Light background, dark text, increased vertical padding */}
       <div
         className="flex items-center justify-center gap-2"
         style={{
           backgroundColor: '#FAFAF9',
-          padding: '8px 14px',
+          padding: '10px 14px',
           borderRadius: '4px',
           border: '1px solid #E7E5E4',
           boxShadow: isEmphasized
