@@ -90,10 +90,37 @@ export default function MapPage() {
     setFilters(newFilters);
   };
 
+  // ═══════════════════════════════════════════════════════════════
+  // PROJECT SELECTION — TASK-055: Sidebar click triggers flyTo + ClickCard
+  // ═══════════════════════════════════════════════════════════════
+  const [clickedProject, setClickedProject] = useState(null);
+
   const handleProjectSelect = (project) => {
+    // 1. Close sidebar
+    setSidebarOpen(false);
+
+    // 2. Find the full marker data (with coordinates)
+    const marker = markers.find(m => m.id === project.id);
+    if (!marker) return;
+
+    // 3. Fly to project location
+    if (mapRef.current && marker.coordinates) {
+      mapRef.current.flyTo({
+        center: [marker.coordinates.lng, marker.coordinates.lat],
+        zoom: Math.max(mapRef.current.getZoom(), 15),
+        duration: 1500,
+        essential: true
+      });
+    }
+
+    // 4. Open Click Card
+    setClickedProject(marker);
     setSelectedProject(project);
-    // Could also fly map to project location here
   };
+
+  const handleCloseClickCard = useCallback(() => {
+    setClickedProject(null);
+  }, []);
 
   const handleProjectNavigate = (project) => {
     navigate(`/project/${project.id}`);
@@ -180,6 +207,8 @@ export default function MapPage() {
           markers={filteredMarkers}
           onProjectSelect={handleProjectNavigate}
           mapStyle={mapStyle}
+          clickedProject={clickedProject}
+          onClickedProjectChange={setClickedProject}
         />
       </div>
     </div>

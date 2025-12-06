@@ -13,7 +13,14 @@ import ClickCard from './ClickCard';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 'mapbox://styles/mapbox/light-v11' }, ref) {
+const Map = forwardRef(function Map({
+  markers = [],
+  onProjectSelect,
+  mapStyle = 'mapbox://styles/mapbox/light-v11',
+  // TASK-055: Accept controlled clickedProject state from parent
+  clickedProject: externalClickedProject,
+  onClickedProjectChange,
+}, ref) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const markersRef = useRef([]);
@@ -25,7 +32,10 @@ const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 
   // ═══════════════════════════════════════════════════════════════
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const [hoverPosition, setHoverPosition] = useState(null); // { x, y } viewport coords
-  const [clickedProject, setClickedProject] = useState(null);
+  // TASK-055: Use external state if provided, otherwise use internal state
+  const [internalClickedProject, setInternalClickedProject] = useState(null);
+  const clickedProject = externalClickedProject !== undefined ? externalClickedProject : internalClickedProject;
+  const setClickedProject = onClickedProjectChange || setInternalClickedProject;
   const [mapReady, setMapReady] = useState(false);
 
   // TASK-050: Expose map instance to parent for flyTo control
@@ -193,18 +203,20 @@ const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 
   // (no more Mapbox Popup for hover - eliminates (0,0) flash)
 
   // TASK-054: Handle click card as modal (no Mapbox Popup)
-  // Fly to project when clicked
+  // TASK-055: When parent controls clickedProject, parent handles flyTo
+  // This effect only runs for internal marker clicks (when externalClickedProject is undefined)
   useEffect(() => {
-    if (!map.current || !clickedProject) return;
+    // Skip if parent controls state or no project clicked
+    if (externalClickedProject !== undefined || !map.current || !internalClickedProject) return;
 
-    // Fly to the clicked project
+    // Fly to the clicked project (marker click case)
     map.current.flyTo({
-      center: [clickedProject.coordinates.lng, clickedProject.coordinates.lat],
+      center: [internalClickedProject.coordinates.lng, internalClickedProject.coordinates.lat],
       zoom: Math.max(map.current.getZoom(), 15),
       duration: 1200,
       essential: true
     });
-  }, [clickedProject]);
+  }, [internalClickedProject, externalClickedProject]);
 
   // Close click card handler
   const handleCloseClickCard = useCallback(() => {
