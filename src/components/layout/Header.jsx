@@ -80,39 +80,41 @@ export default function Header() {
         </a>
       </div>
 
-      {/* CENTER SECTION: Home Icon + Search Bar (TASK-030) */}
-      <div className="flex-1 flex justify-center px-8">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate('/')}
-            className={`p-2 rounded-md transition-colors duration-100 ${
-              isMapPage
-                ? 'text-stone-900 bg-stone-100'
-                : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'
-            }`}
-            title="Return to Map"
-          >
-            <HomeIcon className="w-5 h-5" />
-          </button>
-          <div className="relative w-full max-w-md">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
-            <input
-              type="text"
-              placeholder="Search projects, address..."
-              className="w-full h-9 pl-10 pr-4 bg-stone-100 border border-stone-200 rounded-md
-                         text-sm text-stone-700 placeholder:text-stone-400
-                         focus:outline-none focus:ring-2 focus:ring-stone-300 focus:border-transparent
-                         transition-all duration-100"
-            />
-          </div>
+      {/* CENTER SECTION: Home Icon + Search Bar (TASK-030, TASK-056) */}
+      {/* Absolutely centered search bar with fixed 400px width */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+        <button
+          onClick={() => navigate('/')}
+          className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors duration-100 ${
+            isMapPage
+              ? 'text-stone-900 bg-stone-100'
+              : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'
+          }`}
+          title="Return to Map"
+        >
+          <HomeIcon className="w-5 h-5" />
+        </button>
+        <div className="relative w-[400px]">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+          <input
+            type="text"
+            placeholder="Search projects, address..."
+            className="w-full h-9 pl-10 pr-4 bg-stone-100 border border-stone-200 rounded-md
+                       text-sm text-stone-700 placeholder:text-stone-400
+                       focus:outline-none focus:ring-2 focus:ring-stone-300 focus:border-transparent
+                       transition-all duration-100"
+          />
         </div>
       </div>
 
-      {/* RIGHT SECTION: Feature Icons + New Project + Avatar */}
+      {/* Spacer to push right section */}
+      <div className="flex-1" />
+
+      {/* RIGHT SECTION: Feature Icons + New Project + Avatar (TASK-056: 40x40 containers, 20px icons) */}
       <div className="flex items-center gap-1">
         <button
           onClick={() => {}}
-          className="p-2 text-stone-500 hover:text-stone-700 hover:bg-stone-50 rounded-md transition-colors duration-100"
+          className="w-10 h-10 flex items-center justify-center text-stone-500 hover:text-stone-700 hover:bg-stone-50 rounded-md transition-colors duration-100"
           title="Tasks"
         >
           <CheckIcon className="w-5 h-5" />
@@ -120,7 +122,7 @@ export default function Header() {
 
         <button
           onClick={() => {}}
-          className="p-2 text-stone-500 hover:text-stone-700 hover:bg-stone-50 rounded-md transition-colors duration-100"
+          className="w-10 h-10 flex items-center justify-center text-stone-500 hover:text-stone-700 hover:bg-stone-50 rounded-md transition-colors duration-100"
           title="Assets"
         >
           <DiamondIcon className="w-5 h-5" />
@@ -128,7 +130,7 @@ export default function Header() {
 
         <button
           onClick={() => navigate('/crm')}
-          className={`p-2 rounded-md transition-colors duration-100 ${
+          className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors duration-100 ${
             location.pathname === '/crm'
               ? 'text-stone-900 bg-stone-100'
               : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'
@@ -140,7 +142,7 @@ export default function Header() {
 
         <button
           onClick={() => navigate('/communications')}
-          className={`p-2 rounded-md transition-colors duration-100 ${
+          className={`w-10 h-10 flex items-center justify-center rounded-md transition-colors duration-100 ${
             location.pathname === '/communications'
               ? 'text-stone-900 bg-stone-100'
               : 'text-stone-500 hover:text-stone-700 hover:bg-stone-50'

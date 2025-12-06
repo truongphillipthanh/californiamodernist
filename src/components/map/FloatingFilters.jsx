@@ -1,6 +1,6 @@
 // Floating Filters - Center-top filter controls with 4 dropdown pills
 // Style Guide Part II (Stone palette), Part VII (Interactions)
-// Position: center-top, below header (top: 80px)
+// Position: center-top, below header (top: 76px = 72px header + 4px gap)
 // TASK-051: Wired to filter map markers
 
 import FilterDropdown from '../ui/FilterDropdown';
@@ -43,7 +43,7 @@ export default function FloatingFilters({ filters, onFilterChange }) {
   };
 
   return (
-    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+    <div className="fixed top-[76px] left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
       <div className="bg-white rounded-xl shadow-lg p-3 flex items-center gap-2">
         <FilterDropdown
           label="All Status"
