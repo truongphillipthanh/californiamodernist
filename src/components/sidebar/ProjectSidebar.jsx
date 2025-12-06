@@ -43,9 +43,11 @@ export default function ProjectSidebar({
         )}
       </div>
 
-      {/* TASK-041: Footer with project count */}
-      <div className="p-3 border-t border-stone-200 text-xs text-stone-500">
-        {projects.length} {projects.length === 1 ? 'Project' : 'Projects'}
+      {/* TASK-058: Footer matches header height (72px) and typography */}
+      <div className="h-[72px] px-6 border-t border-stone-200 flex items-center bg-white shrink-0">
+        <span className="text-[15px] font-semibold tracking-[0.08em] uppercase text-stone-900">
+          {projects.length} {projects.length === 1 ? 'Project' : 'Projects'}
+        </span>
       </div>
     </div>
   );
