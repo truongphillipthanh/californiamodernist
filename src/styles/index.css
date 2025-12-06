@@ -15,11 +15,36 @@
   }
 }
 
-/* TASK-044: Position Mapbox controls ABOVE Zoom Pills with 4px gap */
+/* TASK-044: Position Mapbox navigation controls ABOVE Zoom Pills with 4px gap */
 /* Zoom Pills: bottom 24px + ~40px height + 4px gap = 68px */
 .mapboxgl-ctrl-bottom-right {
   bottom: 68px !important;
   right: 24px !important;
+}
+
+/* TASK-057: Move Mapbox logo and attribution to bottom-left */
+/* These should sit at the same 24px baseline as other bottom controls */
+.mapboxgl-ctrl-bottom-left {
+  bottom: 24px !important;
+  left: 24px !important;
+}
+
+.mapboxgl-ctrl-logo {
+  margin: 0 !important;
+}
+
+.mapboxgl-ctrl-attrib {
+  background-color: transparent !important;
+  font-size: 10px !important;
+  color: #78716c !important; /* stone-500 */
+}
+
+.mapboxgl-ctrl-attrib a {
+  color: #78716c !important;
+}
+
+.mapboxgl-ctrl-attrib-inner {
+  background-color: transparent !important;
 }
 
 /* TASK-019 + TASK-029: Mapbox Popup Reset for HoverCard */
