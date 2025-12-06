@@ -192,41 +192,24 @@ const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 
   // TASK-040: Hover card is now rendered as React component with fixed positioning
   // (no more Mapbox Popup for hover - eliminates (0,0) flash)
 
-  // Handle click popup
+  // TASK-054: Handle click card as modal (no Mapbox Popup)
+  // Fly to project when clicked
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !clickedProject) return;
 
-    // Clear previous click popup
-    popupsRef.current.forEach((popup) => {
-      if (popup._content?.classList?.contains('click-popup')) {
-        popup.remove();
-      }
+    // Fly to the clicked project
+    map.current.flyTo({
+      center: [clickedProject.coordinates.lng, clickedProject.coordinates.lat],
+      zoom: Math.max(map.current.getZoom(), 15),
+      duration: 1200,
+      essential: true
     });
+  }, [clickedProject]);
 
-    if (clickedProject) {
-      const popupEl = document.createElement('div');
-      popupEl.classList.add('click-popup');
-      const root = createRoot(popupEl);
-      root.render(
-        <ClickCard
-          project={clickedProject}
-          onViewProject={() => onProjectSelect(clickedProject)}
-        />
-      );
-
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: 20,
-        className: 'click-popup-container',
-      })
-        .setLngLat([clickedProject.coordinates.lng, clickedProject.coordinates.lat])
-        .setDOMContent(popupEl)
-        .addTo(map.current);
-
-      popupsRef.current.push(popup);
-    }
-  }, [clickedProject, onProjectSelect]);
+  // Close click card handler
+  const handleCloseClickCard = useCallback(() => {
+    setClickedProject(null);
+  }, []);
 
   return (
     <>
@@ -239,6 +222,15 @@ const Map = forwardRef(function Map({ markers = [], onProjectSelect, mapStyle = 
           position={hoverPosition}
           onMouseEnter={handleCardEnter}
           onMouseLeave={handleCardLeave}
+        />
+      )}
+
+      {/* TASK-054: Click card as centered modal */}
+      {clickedProject && (
+        <ClickCard
+          project={clickedProject}
+          onClose={handleCloseClickCard}
+          onViewProject={() => onProjectSelect(clickedProject)}
         />
       )}
     </>
