@@ -54,8 +54,15 @@ export default function MapPage() {
   const [activeLayer, setActiveLayer] = useState('map');
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/light-v11');
   const [activeZoom, setActiveZoom] = useState('coastline');
+  // TASK-S001: Lifted hover state for bidirectional sidebar ↔ map coordination
+  const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
+
+  // TASK-S001: Hover handler for bidirectional coordination
+  const handleProjectHover = useCallback((projectId) => {
+    setHoveredProjectId(projectId);
+  }, []);
 
   useEffect(() => {
     Promise.all([getProjects(), getMapMarkers()]).then(([projectsData, markersData]) => {
@@ -179,6 +186,8 @@ export default function MapPage() {
           selectedProject={selectedProject}
           onSelectProject={handleProjectSelect}
           onCloseSidebar={() => setSidebarOpen(false)}
+          hoveredProjectId={hoveredProjectId}
+          onHoverProject={handleProjectHover}
         />
       </Sidebar>
 
@@ -209,6 +218,8 @@ export default function MapPage() {
           mapStyle={mapStyle}
           clickedProject={clickedProject}
           onClickedProjectChange={setClickedProject}
+          hoveredProjectId={hoveredProjectId}
+          onHoverProject={handleProjectHover}
         />
       </div>
     </div>

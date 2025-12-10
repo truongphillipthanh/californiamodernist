@@ -20,6 +20,9 @@ const Map = forwardRef(function Map({
   // TASK-055: Accept controlled clickedProject state from parent
   clickedProject: externalClickedProject,
   onClickedProjectChange,
+  // TASK-S001: Accept controlled hoveredProjectId state from parent
+  hoveredProjectId: externalHoveredProjectId,
+  onHoverProject,
 }, ref) {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -29,8 +32,11 @@ const Map = forwardRef(function Map({
 
   // ═══════════════════════════════════════════════════════════════
   // HOVER STATE — Single ID + viewport position
+  // TASK-S001: Use external state if provided, otherwise use internal state
   // ═══════════════════════════════════════════════════════════════
-  const [hoveredProjectId, setHoveredProjectId] = useState(null);
+  const [internalHoveredProjectId, setInternalHoveredProjectId] = useState(null);
+  const hoveredProjectId = externalHoveredProjectId !== undefined ? externalHoveredProjectId : internalHoveredProjectId;
+  const setHoveredProjectId = onHoverProject || setInternalHoveredProjectId;
   const [hoverPosition, setHoverPosition] = useState(null); // { x, y } viewport coords
   // TASK-055: Use external state if provided, otherwise use internal state
   const [internalClickedProject, setInternalClickedProject] = useState(null);
