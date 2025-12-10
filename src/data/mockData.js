@@ -169,6 +169,7 @@ export const contacts = [
     company: null,
     avatarUrl: null,
     notes: 'Prefers email communication. Available evenings.',
+    waitingStatus: 'awaiting_us', // TASK-C002: Waiting status
     createdAt: '2024-05-01T00:00:00Z',
   },
   {
@@ -257,6 +258,7 @@ export const contacts = [
     lastName: 'Nguyen',
     email: 'pnguyen@malibucity.org',
     phone: '310-456-2489',
+    waitingStatus: 'awaiting_them', // TASK-C002: Waiting status
     company: 'City of Malibu',
     department: 'Planning Department',
     avatarUrl: null,
