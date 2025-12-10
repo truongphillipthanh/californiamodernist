@@ -165,7 +165,7 @@ export default function MapPage() {
       {!sidebarOpen && (
         <button
           onClick={() => setSidebarOpen(true)}
-          className="fixed top-20 left-4 z-[60] p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          className="fixed top-[76px] left-4 z-[60] p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
           aria-label="Open sidebar"
         >
           <Menu size={20} className="text-stone-600" />
