@@ -1,5 +1,6 @@
 // TASK-C001: CRM full-width default with conditional split view
-import { useState, useEffect, useMemo } from 'react';
+// TASK-C002/C003: Enhanced detail, ESC key, toggle selection
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getContacts, getContactById } from '../lib/api';
 import ContactTypeTabs from '../components/crm/ContactTypeTabs';
 import ContactList from '../components/crm/ContactList';
@@ -14,6 +15,18 @@ export default function CRMPage() {
 
   // TASK-C001: Track whether detail panel is open
   const isDetailOpen = selectedContact !== null;
+
+  // TASK-C003: ESC key to close detail panel
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Escape' && selectedContact) {
+      setSelectedContact(null);
+    }
+  }, [selectedContact]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   // Load contacts
   useEffect(() => {
@@ -32,6 +45,15 @@ export default function CRMPage() {
   // TASK-C001: Close handler for detail panel
   const handleCloseDetail = () => {
     setSelectedContact(null);
+  };
+
+  // TASK-C003: Toggle selection - clicking same contact closes detail
+  const handleSelectContact = (contact) => {
+    if (selectedContact?.id === contact.id) {
+      setSelectedContact(null);
+    } else {
+      setSelectedContact(contact);
+    }
   };
 
   // Calculate counts by type
@@ -94,7 +116,7 @@ export default function CRMPage() {
           <ContactList
             contacts={filteredContacts}
             selectedId={selectedContact?.id}
-            onSelect={setSelectedContact}
+            onSelect={handleSelectContact}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             isCompressed={isDetailOpen}
