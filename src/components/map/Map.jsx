@@ -11,7 +11,7 @@ import ProjectMarker from './ProjectMarker';
 import HoverCard from './HoverCard';
 import ClickCard from './ClickCard';
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+mapboxgl.accessToken = 'pk.eyJ1IjoidHJ1b25ncGhpbGxpcHRoYW5oIiwiYSI6ImNtaWdtaWhzaTA4ZWkzZXBsMXlocmZkZGIifQ.02JrRcL3oBb0GapLvvfpPg';
 
 const Map = forwardRef(function Map({
   markers = [],
