@@ -168,6 +168,7 @@ const Map = forwardRef(function Map({
         <ProjectMarker
           project={project}
           isHovered={project.id === hoveredProjectId}
+          isEmphasized={project.id === hoveredProjectId}
         />
       );
 

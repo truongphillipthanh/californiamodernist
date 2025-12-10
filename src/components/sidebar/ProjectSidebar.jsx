@@ -10,6 +10,8 @@ export default function ProjectSidebar({
   selectedProject,
   onSelectProject,
   onCloseSidebar,
+  hoveredProjectId,
+  onHoverProject,
 }) {
   const [viewMode, setViewMode] = useState('list');
 
@@ -35,6 +37,8 @@ export default function ProjectSidebar({
             projects={projects}
             selectedId={selectedProject?.id}
             onSelect={onSelectProject}
+            hoveredProjectId={hoveredProjectId}
+            onHoverProject={onHoverProject}
           />
         ) : (
           <div className="p-4 text-center text-stone-400 text-sm">
