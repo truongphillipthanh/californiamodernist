@@ -1,3 +1,4 @@
+// TASK-C001: CRM full-width default with conditional split view
 import { useState, useEffect, useMemo } from 'react';
 import { getContacts, getContactById } from '../lib/api';
 import ContactTypeTabs from '../components/crm/ContactTypeTabs';
@@ -10,6 +11,9 @@ export default function CRMPage() {
   const [contactDetail, setContactDetail] = useState(null);
   const [activeType, setActiveType] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // TASK-C001: Track whether detail panel is open
+  const isDetailOpen = selectedContact !== null;
 
   // Load contacts
   useEffect(() => {
@@ -24,6 +28,11 @@ export default function CRMPage() {
       setContactDetail(null);
     }
   }, [selectedContact]);
+
+  // TASK-C001: Close handler for detail panel
+  const handleCloseDetail = () => {
+    setSelectedContact(null);
+  };
 
   // Calculate counts by type
   const typeCounts = useMemo(() => {
@@ -60,8 +69,14 @@ export default function CRMPage() {
 
   return (
     <div className="h-[calc(100vh-72px)] flex">
-      {/* Left panel: Contact list (1/3) */}
-      <div className="w-1/3 min-w-[320px] max-w-[400px] border-r border-stone-200 bg-white flex flex-col">
+      {/* TASK-C001: Contact list - full-width by default, 1/3 when detail open */}
+      <div
+        className={`
+          border-r border-stone-200 bg-white flex flex-col
+          transition-all duration-200 ease-in-out
+          ${isDetailOpen ? 'w-1/3 min-w-[320px] max-w-[400px]' : 'w-full'}
+        `}
+      >
         {/* Header */}
         <div className="p-4 border-b border-stone-200">
           <h1 className="text-xl font-semibold text-stone-900">Contacts</h1>
@@ -82,14 +97,17 @@ export default function CRMPage() {
             onSelect={setSelectedContact}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            isCompressed={isDetailOpen}
           />
         </div>
       </div>
 
-      {/* Right panel: Contact detail (2/3) */}
-      <div className="flex-1 bg-stone-50">
-        <ContactDetail contact={contactDetail} />
-      </div>
+      {/* TASK-C001: Right panel - only renders when contact selected */}
+      {isDetailOpen && (
+        <div className="flex-1 bg-stone-50 transition-all duration-200 ease-in-out">
+          <ContactDetail contact={contactDetail} onClose={handleCloseDetail} />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
-import { Mail, Phone, Building, FileText, ExternalLink } from 'lucide-react';
+// TASK-C001: Added close button support
+import { Mail, Phone, Building, FileText, ExternalLink, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function ContactDetail({ contact }) {
+export default function ContactDetail({ contact, onClose }) {
   const navigate = useNavigate();
 
   if (!contact) {
@@ -25,7 +26,19 @@ export default function ContactDetail({ contact }) {
   };
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto relative">
+      {/* TASK-C001: Close button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center
+                     text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-full transition-colors"
+          aria-label="Close detail panel"
+        >
+          <X size={20} />
+        </button>
+      )}
+
       <div className="p-6">
         {/* Header card */}
         <div className="bg-white rounded-lg border border-stone-200 p-6">
