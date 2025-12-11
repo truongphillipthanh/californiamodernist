@@ -1,88 +1,69 @@
 // View mode toggle for sidebar
 // Style Guide Part VI, Section 6.2 - View Toggle Component
-// TASK-036: Hamburger ALWAYS closes sidebar (unified hamburger pattern)
-// TASK-S013: Integrated SortDropdown component
-// Icons: ☰ (closes sidebar) | ▤ (Card) | ▦ (Photo)
+// TASK-S014: Fixed-position view mode toggle with proper inversion
+// Icons: ☰ (List - toggles sidebar) | ▤ (Card) | ▦ (Photo)
+// Gold standard: LayerToggle/ZoomLevelPills inversion pattern (stone-900 bg + white text when active)
 
 import { Menu, LayoutGrid, Image } from 'lucide-react';
-import SortDropdown from './SortDropdown';
 
 export default function ViewToggle({
   activeView,
+  sidebarOpen,
   onViewChange,
-  onCloseSidebar,
-  sortKey,
-  sortDirection,
-  onSortChange,
+  onToggleSidebar,
 }) {
-  // Handle hamburger click - ALWAYS closes sidebar (TASK-036)
-  const handleHamburgerClick = () => {
-    onCloseSidebar?.();
-  };
-
-  // Handle Card/Photo click - toggle or switch view
-  const handleViewClick = (viewId) => {
-    if (activeView === viewId) {
-      // Clicking active Card/Photo reverts to List
-      onViewChange('list');
+  // Handle view mode click
+  const handleModeClick = (mode) => {
+    if (mode === 'list') {
+      // List mode - hamburger toggles sidebar open/closed
+      onToggleSidebar?.();
+      if (!sidebarOpen) {
+        onViewChange('list');
+      }
     } else {
-      onViewChange(viewId);
+      // Card/Photo mode
+      if (activeView === mode && sidebarOpen) {
+        // Clicking active Card/Photo when sidebar is open → do nothing (B1 fix)
+        return;
+      }
+      // Switch to new mode and ensure sidebar is open
+      onViewChange(mode);
+      if (!sidebarOpen) {
+        onToggleSidebar?.();
+      }
     }
   };
 
+  const modes = [
+    { id: 'list', icon: Menu, label: 'List View' },
+    { id: 'card', icon: LayoutGrid, label: 'Card View' },
+    { id: 'photo', icon: Image, label: 'Photo View' },
+  ];
+
   return (
-    <div className="flex items-center justify-between w-full gap-3">
-      {/* View toggle pill group - ☰ | ▤ | ▦ */}
-      <div className="inline-flex rounded-md overflow-hidden border border-stone-200">
-        {/* Hamburger - ALWAYS closes sidebar (TASK-036 unified hamburger) */}
-        <button
-          onClick={handleHamburgerClick}
-          className="flex items-center justify-center p-2 transition-colors bg-white hover:bg-stone-100"
-          title="Close sidebar"
-          aria-label="Close sidebar"
-        >
-          <Menu size={20} className="text-stone-600" />
-        </button>
+    <div className="inline-flex items-center gap-0 bg-white rounded-lg shadow-lg border border-stone-200 p-1">
+      {modes.map(({ id, icon: Icon, label }) => {
+        // List is "active" when sidebar is open AND view is list
+        // Card/Photo are "active" when sidebar is open AND view matches
+        const isActive = sidebarOpen && activeView === id;
 
-        {/* Card view */}
-        <button
-          onClick={() => handleViewClick('card')}
-          className={`
-            flex items-center justify-center p-2 transition-colors border-l border-stone-200
-            ${activeView === 'card'
-              ? 'bg-stone-200'
-              : 'bg-white hover:bg-stone-100'
-            }
-          `}
-          title="Card view"
-          aria-label="Card view"
-        >
-          <LayoutGrid size={20} className="text-stone-600" />
-        </button>
-
-        {/* Photo view */}
-        <button
-          onClick={() => handleViewClick('photo')}
-          className={`
-            flex items-center justify-center p-2 transition-colors border-l border-stone-200
-            ${activeView === 'photo'
-              ? 'bg-stone-200'
-              : 'bg-white hover:bg-stone-100'
-            }
-          `}
-          title="Photo view"
-          aria-label="Photo view"
-        >
-          <Image size={20} className="text-stone-600" />
-        </button>
-      </div>
-
-      {/* TASK-S013: Functional sort dropdown */}
-      <SortDropdown
-        sortKey={sortKey}
-        sortDirection={sortDirection}
-        onSortChange={onSortChange}
-      />
+        return (
+          <button
+            key={id}
+            onClick={() => handleModeClick(id)}
+            title={label}
+            className={`
+              p-2.5 rounded-md transition-colors duration-100
+              ${isActive
+                ? 'bg-stone-900 text-white'
+                : 'text-stone-600 hover:bg-stone-100'
+              }
+            `}
+          >
+            <Icon className="w-5 h-5" />
+          </button>
+        );
+      })}
     </div>
   );
 }

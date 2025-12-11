@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu } from 'lucide-react';
 import Map from '../components/map/Map';
 import ProjectSidebar from '../components/sidebar/ProjectSidebar';
 import Sidebar from '../components/layout/Sidebar';
+import ViewToggle from '../components/sidebar/ViewToggle';
 import FloatingFilters from '../components/map/FloatingFilters';
 import MalibuBeacon from '../components/map/MalibuBeacon';
 import LayerToggle from '../components/map/LayerToggle';
@@ -50,6 +50,8 @@ export default function MapPage() {
   const [markers, setMarkers] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // TASK-S014: View mode state lifted to MapPage for fixed-position toggle
+  const [viewMode, setViewMode] = useState('list');
   const [filters, setFilters] = useState({ status: 'all', phase: 'all', zone: 'all', type: 'all' });
   const [activeLayer, setActiveLayer] = useState('map');
   const [mapStyle, setMapStyle] = useState('mapbox://styles/mapbox/light-v11');
@@ -58,6 +60,11 @@ export default function MapPage() {
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const mapRef = useRef(null);
   const navigate = useNavigate();
+
+  // TASK-S014: Toggle sidebar open/closed
+  const handleToggleSidebar = useCallback(() => {
+    setSidebarOpen(prev => !prev);
+  }, []);
 
   // TASK-S001: Hover handler for bidirectional coordination
   const handleProjectHover = useCallback((projectId) => {
@@ -167,17 +174,15 @@ export default function MapPage() {
 
   return (
     <div className="h-[calc(100vh-72px)] relative">
-      {/* Floating hamburger button - HIDDEN when sidebar is open (TASK-036) */}
-      {/* When sidebar opens, hamburger moves into sidebar header via ViewToggle */}
-      {!sidebarOpen && (
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="fixed top-[76px] left-4 z-[60] p-3 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-          aria-label="Open sidebar"
-        >
-          <Menu size={20} className="text-stone-600" />
-        </button>
-      )}
+      {/* TASK-S014: Fixed-position ViewToggle - NEVER moves regardless of sidebar state */}
+      <div className="fixed top-[88px] left-4 z-[60]">
+        <ViewToggle
+          activeView={viewMode}
+          sidebarOpen={sidebarOpen}
+          onViewChange={setViewMode}
+          onToggleSidebar={handleToggleSidebar}
+        />
+      </div>
 
       {/* Sidebar with ProjectSidebar content */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
@@ -185,9 +190,9 @@ export default function MapPage() {
           projects={projects}
           selectedProject={selectedProject}
           onSelectProject={handleProjectSelect}
-          onCloseSidebar={() => setSidebarOpen(false)}
           hoveredProjectId={hoveredProjectId}
           onHoverProject={handleProjectHover}
+          viewMode={viewMode}
         />
       </Sidebar>
 

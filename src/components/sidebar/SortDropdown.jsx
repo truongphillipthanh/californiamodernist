@@ -1,11 +1,13 @@
 // Sort Dropdown for sidebar header
 // TASK-S013: Functional sort dropdown with A-Z, Status, Last Update, Total Days options
+// TASK-S014: Added inversion styling when sort is active (not default)
+//            Gold standard: stone-900 bg + white text when active
 
 import { useState, useRef, useEffect } from 'react';
-import { ArrowUpDown, ChevronUp } from 'lucide-react';
+import { ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 
 const SORT_OPTIONS = [
-  { key: 'name', label: 'A-Z' },
+  { key: 'name', label: 'A-Z', isDefault: true },
   { key: 'status', label: 'STATUS' },
   { key: 'lastUpdate', label: 'LAST UPDATE' },
   { key: 'totalDays', label: 'TOTAL DAYS' },
@@ -38,21 +40,34 @@ export default function SortDropdown({ sortKey, sortDirection, onSortChange }) {
     setIsOpen(false);
   };
 
-  const currentLabel = SORT_OPTIONS.find(o => o.key === sortKey)?.label || 'Sort';
+  const currentOption = SORT_OPTIONS.find(o => o.key === sortKey);
+  // Sort is "active" (inverted) when not at default (name A-Z)
+  const isActive = sortKey !== 'name' || sortDirection !== 'asc';
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 p-2 rounded-md border border-stone-200 bg-white hover:bg-stone-100 transition-colors"
-        title={`Sort by ${currentLabel}`}
+        className={`
+          flex items-center gap-1.5 px-2.5 py-1.5 rounded-md transition-colors
+          ${isActive
+            ? 'bg-stone-900 text-white'
+            : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-100'
+          }
+        `}
+        title={`Sort by ${currentOption?.label || 'Sort'}`}
         aria-label="Sort projects"
       >
-        <ArrowUpDown size={20} className="text-stone-600" />
-        <ChevronUp
-          size={14}
-          className={`text-stone-500 transition-transform ${sortDirection === 'desc' ? 'rotate-180' : ''}`}
-        />
+        <ArrowUpDown size={18} />
+        {isActive && (
+          <>
+            <span className="text-xs font-medium">{currentOption?.label}</span>
+            <ChevronDown
+              size={14}
+              className={`transition-transform ${sortDirection === 'asc' ? 'rotate-180' : ''}`}
+            />
+          </>
+        )}
       </button>
 
       {isOpen && (

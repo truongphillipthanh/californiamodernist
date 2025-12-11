@@ -1,6 +1,8 @@
 // TASK-C005: Shared FloatingFilterBar component for design consistency
 // Used by Map page and CRM page for consistent filter UI
 // Style Guide Part II (Stone palette), Part VII (Interactions)
+// TASK-S014: Added inversion styling when filter is active (not 'all')
+//            Gold standard: stone-900 bg + white text when active
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -8,7 +10,7 @@ import { ChevronDown } from 'lucide-react';
 export default function FloatingFilterBar({ filters, className = '' }) {
   return (
     <div className={`
-      inline-flex items-center gap-0
+      inline-flex items-center gap-1
       bg-white
       border border-stone-200
       rounded-lg
@@ -16,18 +18,17 @@ export default function FloatingFilterBar({ filters, className = '' }) {
       p-1
       ${className}
     `}>
-      {filters.map((filter, index) => (
+      {filters.map((filter) => (
         <FilterPill
           key={filter.id}
           {...filter}
-          isLast={index === filters.length - 1}
         />
       ))}
     </div>
   );
 }
 
-function FilterPill({ id, label, value, options, onChange, isLast }) {
+function FilterPill({ id, label, value, options, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -45,9 +46,12 @@ function FilterPill({ id, label, value, options, onChange, isLast }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
+  // Filter is "active" when not at default ('all')
+  const isActive = value && value !== 'all';
+
   // Display label: show selected value or default label
   const selectedOption = options?.find(o => o.value === value);
-  const displayLabel = value && value !== 'all'
+  const displayLabel = isActive
     ? selectedOption?.label || label
     : label;
 
@@ -58,19 +62,20 @@ function FilterPill({ id, label, value, options, onChange, isLast }) {
         className={`
           flex items-center gap-1.5
           px-3 py-1.5
-          text-sm text-stone-700
-          hover:bg-stone-50
+          text-sm
           rounded-md
-          transition-colors
-          ${!isLast ? 'border-r border-stone-200 rounded-r-none' : ''}
-          ${isOpen ? 'bg-stone-50' : ''}
+          transition-colors duration-100
+          ${isActive
+            ? 'bg-stone-900 text-white'
+            : 'text-stone-700 hover:bg-stone-100'
+          }
         `}
       >
-        <span className={value && value !== 'all' ? 'font-medium' : ''}>
+        <span className="font-medium">
           {displayLabel}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-stone-400 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-white' : 'text-stone-400'}`}
         />
       </button>
 

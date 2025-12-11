@@ -1,5 +1,6 @@
 // TASK-041: Moved "Projects" label to footer for consistent hamburger position
 // TASK-S013: Sort state and logic
+// TASK-S014: ViewMode now passed in as prop (lifted to MapPage for fixed-position toggle)
 import { useState, useMemo } from 'react';
 import SidebarHeader from './SidebarHeader';
 import ProjectList from './ProjectList';
@@ -10,11 +11,10 @@ export default function ProjectSidebar({
   projects = [],
   selectedProject,
   onSelectProject,
-  onCloseSidebar,
   hoveredProjectId,
   onHoverProject,
+  viewMode = 'list', // TASK-S014: Now passed from parent
 }) {
-  const [viewMode, setViewMode] = useState('list');
   // TASK-S013: Sort state
   const [sortKey, setSortKey] = useState('name');
   const [sortDirection, setSortDirection] = useState('asc');
@@ -67,11 +67,8 @@ export default function ProjectSidebar({
 
   return (
     <div className="h-full flex flex-col">
-      {/* TASK-041: Header with controls only - no title above */}
+      {/* TASK-S014: Header with sort only - view toggle is fixed position overlay */}
       <SidebarHeader
-        activeView={viewMode}
-        onViewChange={setViewMode}
-        onCloseSidebar={onCloseSidebar}
         sortKey={sortKey}
         sortDirection={sortDirection}
         onSortChange={handleSortChange}
