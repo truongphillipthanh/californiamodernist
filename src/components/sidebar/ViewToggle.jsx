@@ -1,11 +1,20 @@
 // View mode toggle for sidebar
 // Style Guide Part VI, Section 6.2 - View Toggle Component
 // TASK-036: Hamburger ALWAYS closes sidebar (unified hamburger pattern)
+// TASK-S013: Integrated SortDropdown component
 // Icons: ☰ (closes sidebar) | ▤ (Card) | ▦ (Photo)
 
-import { Menu, LayoutGrid, Image, ArrowUpDown } from 'lucide-react';
+import { Menu, LayoutGrid, Image } from 'lucide-react';
+import SortDropdown from './SortDropdown';
 
-export default function ViewToggle({ activeView, onViewChange, onCloseSidebar }) {
+export default function ViewToggle({
+  activeView,
+  onViewChange,
+  onCloseSidebar,
+  sortKey,
+  sortDirection,
+  onSortChange,
+}) {
   // Handle hamburger click - ALWAYS closes sidebar (TASK-036)
   const handleHamburgerClick = () => {
     onCloseSidebar?.();
@@ -68,14 +77,12 @@ export default function ViewToggle({ activeView, onViewChange, onCloseSidebar })
         </button>
       </div>
 
-      {/* Sort button - separate, right-aligned */}
-      <button
-        className="flex items-center justify-center p-2 rounded-md border border-stone-200 bg-white hover:bg-stone-100 transition-colors"
-        title="Sort"
-        aria-label="Sort projects"
-      >
-        <ArrowUpDown size={20} className="text-stone-600" />
-      </button>
+      {/* TASK-S013: Functional sort dropdown */}
+      <SortDropdown
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        onSortChange={onSortChange}
+      />
     </div>
   );
 }
