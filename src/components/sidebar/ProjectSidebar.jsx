@@ -1,5 +1,6 @@
 // TASK-041: Moved "Projects" label to footer for consistent hamburger position
-import { useState } from 'react';
+// TASK-S013: Sort state and logic
+import { useState, useMemo } from 'react';
 import SidebarHeader from './SidebarHeader';
 import ProjectList from './ProjectList';
 import ProjectCards from './ProjectCards';
@@ -14,6 +15,49 @@ export default function ProjectSidebar({
   onHoverProject,
 }) {
   const [viewMode, setViewMode] = useState('list');
+  // TASK-S013: Sort state
+  const [sortKey, setSortKey] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
+
+  // TASK-S013: Sort logic
+  const sortedProjects = useMemo(() => {
+    const sorted = [...projects].sort((a, b) => {
+      switch (sortKey) {
+        case 'name':
+          return (a.name || '').localeCompare(b.name || '');
+
+        case 'status': {
+          // Priority order: blocked (urgent) → waiting → active → complete
+          const statusOrder = { blocked: 0, waiting: 1, active: 2, complete: 3, on_hold: 4, pending: 1 };
+          return (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99);
+        }
+
+        case 'lastUpdate': {
+          // Most recent first (descending by default)
+          const aDate = a.lastAction?.date ? new Date(a.lastAction.date) : new Date(0);
+          const bDate = b.lastAction?.date ? new Date(b.lastAction.date) : new Date(0);
+          return bDate - aDate;
+        }
+
+        case 'totalDays': {
+          // Longest first (descending by default)
+          const aDays = a.lastAction?.daysAgo ?? a.daysInPhase ?? 0;
+          const bDays = b.lastAction?.daysAgo ?? b.daysInPhase ?? 0;
+          return bDays - aDays;
+        }
+
+        default:
+          return 0;
+      }
+    });
+
+    return sortDirection === 'desc' ? sorted.reverse() : sorted;
+  }, [projects, sortKey, sortDirection]);
+
+  const handleSortChange = (key, direction) => {
+    setSortKey(key);
+    setSortDirection(direction);
+  };
 
   const ViewComponent = {
     list: ProjectList,
@@ -28,13 +72,16 @@ export default function ProjectSidebar({
         activeView={viewMode}
         onViewChange={setViewMode}
         onCloseSidebar={onCloseSidebar}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
       />
 
       {/* Scrollable project list */}
       <div className="flex-1 overflow-y-auto">
-        {projects.length > 0 ? (
+        {sortedProjects.length > 0 ? (
           <ViewComponent
-            projects={projects}
+            projects={sortedProjects}
             selectedId={selectedProject?.id}
             onSelect={onSelectProject}
             hoveredProjectId={hoveredProjectId}

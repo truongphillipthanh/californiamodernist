@@ -1,6 +1,7 @@
 // List View: Name-only with hover expand to card content
 // Style Guide Part VI, Section 6.2
 // TASK-S003: Bidirectional hover - expands to show card content on hover
+// TASK-S011: Unified raised hover effect across all views
 
 const STATUS_COLORS = {
   blocked: '#DC2626',
@@ -25,18 +26,25 @@ export default function ProjectList({ projects, selectedId, onSelect, hoveredPro
   const highlightedId = hoveredProjectId;
 
   return (
-    <ul className="divide-y divide-stone-100">
+    <div className="p-3 space-y-2">
       {projects.map((project) => {
         const isHighlighted = highlightedId === project.id;
         const statusColor = STATUS_COLORS[project.status] || STATUS_COLORS.active;
         const statusLabel = STATUS_LABELS[project.status] || project.status?.toUpperCase();
 
         return (
-          <li
+          // TASK-S011: Unified raised hover effect - matches Card view
+          <div
             key={project.id}
             className={`
-              cursor-pointer transition-all duration-150 ease-out
-              ${isHighlighted ? 'bg-stone-100' : selectedId === project.id ? 'bg-stone-100' : 'hover:bg-stone-50'}
+              bg-white rounded-lg border cursor-pointer
+              transition-all duration-100 ease-out
+              ${isHighlighted
+                ? 'shadow-lg border-stone-300 -translate-y-0.5'
+                : selectedId === project.id
+                  ? 'shadow-sm border-stone-900 bg-stone-50'
+                  : 'shadow-sm border-stone-200 hover:shadow-md hover:border-stone-300'
+              }
             `}
             onClick={() => onSelect(project)}
             onMouseEnter={() => onHoverProject?.(project.id)}
@@ -96,9 +104,9 @@ export default function ProjectList({ projects, selectedId, onSelect, hoveredPro
                 </span>
               </div>
             )}
-          </li>
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 // Card View: Medium cards with more detail
 // Style Guide Part VI, Section 6.3
 // TASK-S004: Bidirectional hover - highlight with elevation on hover
+// TASK-S011: Unified raised hover effect across all views
 
 const STATUS_COLORS = {
   blocked: '#DC2626',
@@ -37,10 +38,10 @@ export default function ProjectCards({ projects, selectedId, onSelect, hoveredPr
             className={`
               w-full text-left p-4 rounded-lg border transition-all duration-100 ease-out
               ${isHighlighted
-                ? 'border-stone-300 bg-white shadow-lg ring-2 ring-stone-200'
+                ? 'border-stone-300 bg-white shadow-lg -translate-y-0.5'
                 : selectedId === project.id
                   ? 'border-stone-900 bg-stone-50 shadow-sm'
-                  : 'border-stone-200 bg-white hover:border-stone-300 shadow-sm'
+                  : 'border-stone-200 bg-white hover:border-stone-300 hover:shadow-md shadow-sm'
               }
             `}
           >

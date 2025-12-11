@@ -33,11 +33,13 @@ const Map = forwardRef(function Map({
   // ═══════════════════════════════════════════════════════════════
   // HOVER STATE — Single ID + viewport position
   // TASK-S001: Use external state if provided, otherwise use internal state
+  // TASK-S009: Calculate position from coordinates for sidebar-triggered hovers
   // ═══════════════════════════════════════════════════════════════
   const [internalHoveredProjectId, setInternalHoveredProjectId] = useState(null);
   const hoveredProjectId = externalHoveredProjectId !== undefined ? externalHoveredProjectId : internalHoveredProjectId;
   const setHoveredProjectId = onHoverProject || setInternalHoveredProjectId;
   const [hoverPosition, setHoverPosition] = useState(null); // { x, y } viewport coords
+  const [isLocalHover, setIsLocalHover] = useState(false); // Track if hover originated from map marker
   // TASK-055: Use external state if provided, otherwise use internal state
   const [internalClickedProject, setInternalClickedProject] = useState(null);
   const clickedProject = externalClickedProject !== undefined ? externalClickedProject : internalClickedProject;
@@ -56,12 +58,32 @@ const Map = forwardRef(function Map({
   // HOVER HANDLERS
   // ═══════════════════════════════════════════════════════════════
 
+  // TASK-S009: Calculate screen position from project coordinates
+  const getScreenPositionFromCoords = useCallback((project) => {
+    if (!map.current || !project?.coordinates) return null;
+    try {
+      const point = map.current.project([project.coordinates.lng, project.coordinates.lat]);
+      // Get map container bounds to convert to viewport coords
+      const container = mapContainer.current;
+      if (!container) return null;
+      const rect = container.getBoundingClientRect();
+      return {
+        x: rect.left + point.x,
+        y: rect.top + point.y
+      };
+    } catch (e) {
+      console.warn('Failed to project coordinates:', e);
+      return null;
+    }
+  }, []);
+
   // TASK-040: Pass position with the project ID for fixed positioning
   const handleMarkerEnter = useCallback((projectId, position) => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+    setIsLocalHover(true); // Mark this as a local (map marker) hover
     setHoverPosition(position);  // Set position FIRST
     setHoveredProjectId(projectId);
   }, []);
@@ -70,6 +92,7 @@ const Map = forwardRef(function Map({
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredProjectId(null);
       setHoverPosition(null);
+      setIsLocalHover(false);
       hoverTimeoutRef.current = null;
     }, 200);
   }, []);
@@ -97,6 +120,51 @@ const Map = forwardRef(function Map({
       }
     };
   }, []);
+
+  // TASK-S009: Calculate position for sidebar-triggered hovers
+  // When hoveredProjectId changes from external source (sidebar), calculate screen position
+  useEffect(() => {
+    // If no hovered project or hover originated locally, skip
+    if (!hoveredProjectId || isLocalHover) return;
+
+    // Clear any existing timeout since we have a new hover
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+
+    const project = markers.find(p => p.id === hoveredProjectId);
+    if (!project) {
+      setHoverPosition(null);
+      return;
+    }
+
+    // Calculate position from coordinates
+    const updatePosition = () => {
+      const pos = getScreenPositionFromCoords(project);
+      setHoverPosition(pos);
+    };
+
+    updatePosition();
+
+    // Update position when map moves
+    if (map.current) {
+      map.current.on('move', updatePosition);
+      map.current.on('zoom', updatePosition);
+
+      return () => {
+        map.current?.off('move', updatePosition);
+        map.current?.off('zoom', updatePosition);
+      };
+    }
+  }, [hoveredProjectId, isLocalHover, markers, getScreenPositionFromCoords]);
+
+  // Reset isLocalHover when hoveredProjectId becomes null
+  useEffect(() => {
+    if (!hoveredProjectId) {
+      setIsLocalHover(false);
+    }
+  }, [hoveredProjectId]);
 
   // Initialize map
   useEffect(() => {
