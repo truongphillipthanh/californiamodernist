@@ -1,8 +1,9 @@
 // TASK-C001: CRM full-width default with conditional split view
 // TASK-C002/C003: Enhanced detail, ESC key, toggle selection
 // TASK-C005: Floating filters for visual consistency with Map page
+// TASK-C006: Page header, row density fixes
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Search } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 import { getContacts, getContactById } from '../lib/api';
 import FloatingFilterBar from '../components/shared/FloatingFilterBar';
 import ContactList from '../components/crm/ContactList';
@@ -165,13 +166,23 @@ export default function CRMPage() {
 
   return (
     <div className="relative h-[calc(100vh-72px)] flex flex-col bg-stone-50">
+      {/* TASK-C006: Page Header - matches Map sidebar style */}
+      <div className="h-14 flex items-center px-4 border-b border-stone-200 bg-white">
+        <div className="flex items-center gap-3">
+          <Users className="w-5 h-5 text-stone-600" />
+          <h1 className="text-sm font-semibold uppercase tracking-wide text-stone-700">
+            Contacts
+          </h1>
+        </div>
+      </div>
+
       {/* TASK-C005: Floating Filter Bar - matches Map page positioning */}
-      <div className="absolute top-4 left-4 z-20">
+      <div className="absolute top-[72px] left-4 z-20">
         <FloatingFilterBar filters={filterConfig} />
       </div>
 
       {/* Main Content Area - with top padding for floating filters */}
-      <div className="flex flex-1 overflow-hidden pt-16">
+      <div className="flex flex-1 overflow-hidden pt-12">
         {/* TASK-C001: Contact list - full-width by default, 1/3 when detail open */}
         <div
           className={`

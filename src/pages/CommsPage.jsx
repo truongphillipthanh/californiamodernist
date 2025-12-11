@@ -1,6 +1,7 @@
 // TASK-C004: Communications page scaffold (Gmail + Internal messaging)
+// TASK-C007: Updated page header, layout enhancements
 import { useState } from 'react';
-import { MessageSquare, Users, Ticket, Bell, Hash, Lock } from 'lucide-react';
+import { MessageSquare, Users, Ticket, Bell, Hash, Lock, Mail } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'channels', label: 'Channels', icon: Hash },
@@ -15,9 +16,14 @@ export default function CommsPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-72px)] bg-stone-50">
-      {/* Header */}
-      <div className="px-6 py-4 bg-white border-b border-stone-200">
-        <h1 className="text-xl font-semibold text-stone-800">Communications</h1>
+      {/* TASK-C007: Page Header - matches Map sidebar style */}
+      <div className="h-14 flex items-center px-4 border-b border-stone-200 bg-white">
+        <div className="flex items-center gap-3">
+          <MessageSquare className="w-5 h-5 text-stone-600" />
+          <h1 className="text-sm font-semibold uppercase tracking-wide text-stone-700">
+            Communications
+          </h1>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -26,7 +32,7 @@ export default function CommsPage() {
         <div className="w-2/3 border-r border-stone-200 bg-white flex flex-col">
           <div className="px-4 py-3 border-b border-stone-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-lg">📧</span>
+              <Mail className="w-4 h-4 text-stone-500" />
               <span className="font-medium text-stone-700">Gmail</span>
             </div>
             {gmailConnected && (
@@ -71,14 +77,13 @@ export default function CommsPage() {
             ) : (
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 bg-stone-100 rounded-full flex items-center justify-center">
-                  <span className="text-3xl">📧</span>
+                  <Mail className="w-8 h-8 text-stone-400" />
                 </div>
                 <h2 className="text-lg font-medium text-stone-800 mb-2">
                   Connect Gmail
                 </h2>
-                <p className="text-sm text-stone-500 mb-4 max-w-sm">
-                  View and manage project-related emails directly in CMD.
-                  Your emails stay private and secure.
+                <p className="text-sm text-stone-500 mb-6 max-w-sm">
+                  Link your Gmail to view project correspondence.
                 </p>
                 <button
                   onClick={() => setGmailConnected(true)}
