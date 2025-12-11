@@ -1,12 +1,11 @@
 // TASK-C001: Support compressed (split) and full-width modes
-import { Search, MessageSquare, Phone, Mail } from 'lucide-react';
+// TASK-C005: Search moved to CRMPage with floating filters
+import { MessageSquare, Phone, Mail } from 'lucide-react';
 
 export default function ContactList({
   contacts,
   selectedId,
   onSelect,
-  searchQuery,
-  onSearchChange,
   isCompressed = false,
 }) {
   const typeColors = {
@@ -18,23 +17,6 @@ export default function ContactList({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Search */}
-      <div className="p-4 border-b border-stone-100">
-        <div className="relative">
-          <Search
-            size={16}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
-          />
-          <input
-            type="text"
-            placeholder="Search contacts..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-stone-100 border-0 rounded-md text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:ring-offset-1"
-          />
-        </div>
-      </div>
-
       {/* Contact list */}
       <div className="flex-1 overflow-y-auto">
         {contacts.length > 0 ? (
